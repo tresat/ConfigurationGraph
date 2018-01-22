@@ -6,14 +6,14 @@ plugins {
     id 'java-gradle-plugin'
 }
 
+// This should probably match the kotlin plugin version in the plugins config block
+project.ext.kotlin_version = '1.2.20'
+
 repositories {
     jcenter()
 }
 
 dependencies {
-    // This should probably match the kotlin plugin version in the plugins config block
-    project.ext.kotlin_version = '1.2.20'
-    
     compileOnly gradleApi()
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     
