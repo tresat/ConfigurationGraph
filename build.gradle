@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.2.20'
+    id 'org.jetbrains.kotlin.jvm' version '1.2.21'
     
     // Simplifies adding plugin under test to a classpath
     // https://docs.gradle.org/current/userguide/javaGradle_plugin.html
@@ -7,7 +7,7 @@ plugins {
 }
 
 // This should probably match the kotlin plugin version in the plugins config block
-project.ext.kotlin_version = '1.2.20'
+project.ext.kotlin_version = '1.2.21'
 
 repositories {
     jcenter()
@@ -21,6 +21,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.assertj:assertj-core:3.6.2'
 }
+
+
 
 /*
  * Define the version of the Gradle Wrapper we'll be using.
