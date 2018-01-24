@@ -6,6 +6,8 @@ plugins {
     id 'java-gradle-plugin'
 }
 
+apply plugin: 'maven'
+
 // This should probably match the kotlin plugin version in the plugins config block
 project.ext.kotlin_version = '1.2.21'
 
@@ -23,6 +25,16 @@ dependencies {
 }
 
 
+group = 'com.tomtresansky.gradle.plugin.configurationgraph'
+version = '0.0.1'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('../repo'))
+        }
+    }
+}
 
 /*
  * Define the version of the Gradle Wrapper we'll be using.

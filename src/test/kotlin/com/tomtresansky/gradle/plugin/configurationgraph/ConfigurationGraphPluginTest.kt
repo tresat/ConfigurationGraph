@@ -1,3 +1,5 @@
+package com.tomtresansky.gradle.plugin.configurationgraph
+
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before

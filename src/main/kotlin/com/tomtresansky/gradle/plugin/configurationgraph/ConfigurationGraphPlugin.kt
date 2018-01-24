@@ -1,3 +1,5 @@
+package com.tomtresansky.gradle.plugin.configurationgraph
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
