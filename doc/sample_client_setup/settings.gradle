@@ -2,6 +2,16 @@
  * Allows automatically running the client project as a Composite build,
  * which will trigger the plugin's build and depend on the output.
  *
- * See https://docs.gradle.org/current/userguide/composite_builds.html
+ * For more info, see:
+ *
+ *   https://docs.gradle.org/current/userguide/composite_builds.html
+ *
+ * For example dual-project import into IDEA, see:
+ *
+ *   https://blog.jetbrains.com/idea/2017/03/webinar-recording-composite-builds-with-gradle/
+ *
+ * and the example project at:
+ *
+ *   https://github.com/gradle/gradle/tree/c7da24ebff119eacc8899ce1c609dd0d426f1243/subprojects/docs/src/samples/compositeBuilds/basic
  */
 includeBuild '../ConfigurationGraph'
