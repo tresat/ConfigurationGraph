@@ -1,0 +1,21 @@
+/*
+ * Example build script for a test project - must be used on a project in a sibling directory to the Configuration Graph project.
+ */
+buildscript {
+    repositories {
+        jcenter()
+
+        maven {
+            url uri('../repo')
+        }
+    }
+
+    dependencies {
+        classpath group: 'com.tomtresansky.gradle.plugin.configurationgraph',
+                name: 'ConfigurationGraph',
+                version: '0.0.1'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'com.tomtresansky.gradle.plugin.configurationgraph'
