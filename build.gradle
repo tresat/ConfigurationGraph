@@ -25,7 +25,7 @@ dependencies {
 }
 
 
-group = 'com.tomtresansky.gradle.plugin.configurationgraph'
+group = 'com.tomtresansky.gradle.plugin'
 version = '0.0.1'
 
 uploadArchives {

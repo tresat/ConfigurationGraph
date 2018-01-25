@@ -1,0 +1,7 @@
+/*
+ * Allows automatically running the client project as a Composite build,
+ * which will trigger the plugin's build and depend on the output.
+ *
+ * See https://docs.gradle.org/current/userguide/composite_builds.html
+ */
+includeBuild '../ConfigurationGraph'

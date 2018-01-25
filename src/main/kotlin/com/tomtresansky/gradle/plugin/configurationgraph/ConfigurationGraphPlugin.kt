@@ -21,9 +21,11 @@ class ConfigurationGraphPlugin : Plugin<Project> {
                 val outputFileName = config?.outputFileName ?: ConfigurationGraphPluginExtension.DEFAULT_OUTPUT_FILE_NAME
 
                 val outputFile = file(outputFileName).apply { createNewFile() }
-                println("Made output file: $outputFile")
-                configurations.forEach { c ->
-                    outputFile.writeText(c.name)
+
+                outputFile.printWriter().use { out ->
+                    configurations.forEach { c ->
+                        out.println(c.name)
+                    }
                 }
             }
         }
