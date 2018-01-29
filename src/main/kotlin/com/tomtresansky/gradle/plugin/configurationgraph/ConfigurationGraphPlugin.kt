@@ -1,33 +1,38 @@
 package com.tomtresansky.gradle.plugin.configurationgraph
 
-import org.gradle.api.Plugin
+import org.gradle.api.plugins.ReportingBasePlugin
 import org.gradle.api.Project
+import org.gradle.api.internal.project.ProjectInternal
+import java.io.File
 
-open class ConfigurationGraphPluginExtension {
+class ConfigurationGraphPlugin : ReportingBasePlugin() {
+    lateinit var extension: ConfigurationGraphPluginExtension
+    lateinit var task: ExtractConfigurationsTask
+
     companion object {
-        const val DEFAULT_OUTPUT_FILE_NAME = "configuration_graph.txt"
+        const val CONFIGURATIONS_GRAPH_REPORT_GROUP = "project"
     }
 
-    var outputFileName = DEFAULT_OUTPUT_FILE_NAME
-}
+    override fun apply(project: ProjectInternal) {
+        project.plugins.apply(ReportingBasePlugin::class.java)
 
-class ConfigurationGraphPlugin : Plugin<Project> {
-    override fun apply(project: Project) {
-        with(project) {
-            extensions.create("configurationGraph", ConfigurationGraphPluginExtension::class.java)
+        extension = createExtension(project)
+        task = createTask(project)
+    }
 
-            afterEvaluate {
-                val config = extensions.findByType(ConfigurationGraphPluginExtension::class.java)
-                val outputFileName = config?.outputFileName ?: ConfigurationGraphPluginExtension.DEFAULT_OUTPUT_FILE_NAME
+    fun createExtension(project: ProjectInternal): ConfigurationGraphPluginExtension {
+        return project.extensions.create("configurationGraph", ConfigurationGraphPluginExtension::class.java, project)
+    }
 
-                val outputFile = file(outputFileName).apply { createNewFile() }
+    fun createTask(project: ProjectInternal): ExtractConfigurationsTask {
+        val task: ExtractConfigurationsTask = project.tasks.create(ExtractConfigurationsTask.TASK_NAME, ExtractConfigurationsTask::class.java)
+        with (task) {
+            description = ExtractConfigurationsTask.TASK_DESCRIPTION
+            group = ExtractConfigurationsTask.TASK_GROUP
 
-                outputFile.printWriter().use { out ->
-                    configurations.forEach { c ->
-                        out.println(c.name)
-                    }
-                }
-            }
+            outputFilePath = extension.outputFileName
         }
+
+        return task
     }
 }
