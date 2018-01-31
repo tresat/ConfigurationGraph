@@ -1,6 +1,7 @@
 package com.tomtresansky.gradle.plugin.configurationgraph
 
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.diagnostics.AbstractReportTask
 import org.gradle.api.tasks.diagnostics.internal.TextReportRenderer
@@ -11,7 +12,7 @@ import java.nio.file.Path
  *
  * The class must be defined as open.  If not set correctly, Gradle will try to proxy your class and fail the build.
  */
-open class ConfigurationReportTask() : AbstractReportTask() {
+open class ConfigurationReportTask : AbstractReportTask() {
     companion object {
         const val TASK_NAME = "configurationsGraph"
         const val TASK_GROUP = "reporting"
@@ -31,15 +32,38 @@ open class ConfigurationReportTask() : AbstractReportTask() {
         extractConfigurationData(project!!)
     }
 
-    fun extractConfigurationData(project: Project) {
+    private fun extractConfigurationData(project: Project) {
         with(project) {
             val outputFile = file(outputFilePath).apply { createNewFile() }
 
+            val configInheritanceMap : MutableMap<Configuration, MutableSet<Configuration>> = hashMapOf()
+            configurations.forEach { childConfig ->
+                TODO("configs without extendsFrom need to be included here")
+                childConfig.extendsFrom.map { parentConfig -> configInheritanceMap.computeIfAbsent(parentConfig, { _ -> hashSetOf() }) }
+                                       .forEach { children -> children.add(childConfig) }
+            }
+
             outputFile.printWriter().use { out ->
-                configurations.forEach { c ->
-                    out.println(c.name)
-                    out.println("hey")
+                out.println("digraph Configurations {")
+                configInheritanceMap.forEach { parent, children ->
+                    out.printf("\t${parent.name}")
+
+                    when (children.size) {
+                        0 -> out.print("\r\n")
+                        1 -> out.print(" -> ")
+                        else -> out.print(" -> { ")
+                    }
+
+                    out.print(children.map { it.name }
+                                      .joinToString(separator = ", "))
+
+                    if (children.size > 1) {
+                        out.print(" }")
+                    }
+
+                    out.print(";\r\n")
                 }
+                out.println('}')
             }
         }
     }
