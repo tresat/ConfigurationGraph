@@ -1,0 +1,4 @@
+- Rename configurationGraph to configurationReport for consistency with project-report
+
+- Set up tests
+

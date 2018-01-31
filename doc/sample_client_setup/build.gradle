@@ -20,5 +20,5 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'com.tomtresansky.gradle.plugin.configurationgraph'
 
-defaultTasks 'extractConfigurations'
+defaultTasks 'configurationsReport'
 
