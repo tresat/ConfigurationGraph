@@ -11,14 +11,14 @@ buildscript {
     }
 
     dependencies {
-        classpath group: 'com.tomtresansky.gradle.plugin.configurationgraph',
-                name: 'ConfigurationGraph',
+        classpath group: 'com.tomtresansky.gradle.plugin.configurationreport',
+                name: 'ConfigurationReport',
                 version: '0.0.1'
     }
 }
 
 apply plugin: 'java'
-apply plugin: 'com.tomtresansky.gradle.plugin.configurationgraph'
+apply plugin: 'com.tomtresansky.gradle.plugin.configurationreport'
 
-defaultTasks 'configurationsReport'
+defaultTasks 'configurationReport'
 

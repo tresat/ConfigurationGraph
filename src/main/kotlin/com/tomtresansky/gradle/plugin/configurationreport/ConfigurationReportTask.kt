@@ -1,4 +1,4 @@
-package com.tomtresansky.gradle.plugin.configurationgraph
+package com.tomtresansky.gradle.plugin.configurationreport
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -14,7 +14,7 @@ import java.nio.file.Path
  */
 open class ConfigurationReportTask : AbstractReportTask() {
     companion object {
-        const val TASK_NAME = "configurationsGraph"
+        const val TASK_NAME = "configurationReport"
         const val TASK_GROUP = "reporting"
         const val TASK_DESCRIPTION = "Generates an HTML report about the project's configurations and their relationships."
     }
@@ -38,7 +38,7 @@ open class ConfigurationReportTask : AbstractReportTask() {
 
             val configInheritanceMap : MutableMap<Configuration, MutableSet<Configuration>> = hashMapOf()
             configurations.forEach { childConfig ->
-                TODO("configs without extendsFrom need to be included here")
+                // TODO("configs without extendsFrom need to be included here")
                 childConfig.extendsFrom.map { parentConfig -> configInheritanceMap.computeIfAbsent(parentConfig, { _ -> hashSetOf() }) }
                                        .forEach { children -> children.add(childConfig) }
             }

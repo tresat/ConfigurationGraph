@@ -14,4 +14,4 @@
  *
  *   https://github.com/gradle/gradle/tree/c7da24ebff119eacc8899ce1c609dd0d426f1243/subprojects/docs/src/samples/compositeBuilds/basic
  */
-includeBuild '../ConfigurationGraph'
+includeBuild '../ConfigurationReport'

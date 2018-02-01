@@ -1,12 +1,12 @@
-package com.tomtresansky.gradle.plugin.configurationgraph
+package com.tomtresansky.gradle.plugin.configurationreport
 
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.plugins.ProjectReportsPlugin
 import org.gradle.api.plugins.ReportingBasePlugin
 import java.nio.file.Paths
 
-class ConfigurationGraphPlugin : ReportingBasePlugin() {
-    lateinit var extension: ConfigurationGraphPluginExtension
+class ConfigurationReportPlugin : ReportingBasePlugin() {
+    lateinit var extension: ConfigurationReportPluginExtension
     lateinit var task: ConfigurationReportTask
 
     companion object {
@@ -20,8 +20,8 @@ class ConfigurationGraphPlugin : ReportingBasePlugin() {
         task = createTask(project)
     }
 
-    private fun createExtension(project: ProjectInternal): ConfigurationGraphPluginExtension {
-        return project.extensions.create("configurationGraph", ConfigurationGraphPluginExtension::class.java, project)
+    private fun createExtension(project: ProjectInternal): ConfigurationReportPluginExtension {
+        return project.extensions.create("configurationGraph", ConfigurationReportPluginExtension::class.java, project)
     }
 
     fun createTask(project: ProjectInternal): ConfigurationReportTask {
@@ -31,7 +31,7 @@ class ConfigurationGraphPlugin : ReportingBasePlugin() {
             group = ConfigurationReportTask.TASK_GROUP
 
             outputFilePath = Paths.get(extension.baseDir.path,
-                                       ConfigurationGraphPluginExtension.CONFIGURATION_GRAPH_REPORTS_DIR_NAME,
+                                       ConfigurationReportPluginExtension.CONFIGURATION_GRAPH_REPORTS_DIR_NAME,
                                        extension.outputFileName)
         }
 

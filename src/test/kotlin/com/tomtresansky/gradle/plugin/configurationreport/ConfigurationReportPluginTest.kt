@@ -1,17 +1,17 @@
-package com.tomtresansky.gradle.plugin.configurationgraph
+package com.tomtresansky.gradle.plugin.configurationreport
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
 import org.junit.Test
 
-class ConfigurationGraphPluginTest {
+class ConfigurationReportPluginTest {
     lateinit var project: Project
 
     @Before
     fun setUp() {
         project = ProjectBuilder.builder().build()
-        project.pluginManager.apply(ConfigurationGraphPlugin::class.java)
+        project.pluginManager.apply(ConfigurationReportPlugin::class.java)
     }
 
     @Test
