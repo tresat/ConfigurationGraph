@@ -18,6 +18,7 @@ repositories {
 dependencies {
     compileOnly gradleApi()
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'guru.nidi:graphviz-java:0.2.3'
     
     testCompileOnly gradleTestKit()
     testImplementation 'junit:junit:4.12'

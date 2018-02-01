@@ -5,6 +5,7 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.diagnostics.AbstractReportTask
 import org.gradle.api.tasks.diagnostics.internal.TextReportRenderer
+import java.io.File
 import java.nio.file.Path
 
 /**
@@ -29,10 +30,10 @@ open class ConfigurationReportTask : AbstractReportTask() {
     }
 
     override fun generate(project: Project?) {
-        extractConfigurationData(project!!)
+        val dotFile = extractConfigurationData(project!!)
     }
 
-    private fun extractConfigurationData(project: Project) {
+    private fun extractConfigurationData(project: Project): File {
         with(project) {
             val outputFile = file(outputFilePath).apply { createNewFile() }
 
@@ -65,6 +66,8 @@ open class ConfigurationReportTask : AbstractReportTask() {
                 }
                 out.println('}')
             }
+
+            return outputFile
         }
     }
 }
