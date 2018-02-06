@@ -1,3 +1,9 @@
+buildscript {
+    dependencies {
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'
+    }
+}
+
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.2.21'
     
@@ -7,27 +13,46 @@ plugins {
 }
 
 apply plugin: 'maven'
+apply plugin: 'org.junit.platform.gradle.plugin'
 
 // This should probably match the kotlin plugin version in the plugins config block
 project.ext.kotlin_version = '1.2.21'
 
+group = 'com.tomtresansky.gradle.plugin'
+version = '0.0.1'
+
 repositories {
     jcenter()
+    maven { url 'http://dl.bintray.com/jetbrains/spek' }
 }
 
 dependencies {
     compileOnly gradleApi()
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'guru.nidi:graphviz-java:0.2.3'
+    implementation 'com.google.guava:guava:24.0-jre'
     
     testCompileOnly gradleTestKit()
+    testImplementation('org.jetbrains.spek:spek-api:1.1.5') {
+        exclude group: 'org.jetbrains.kotlin' // We are probably using a newer version of Kotlin
+    }
+
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.assertj:assertj-core:3.6.2'
+
+    testRuntime('org.jetbrains.spek:spek-junit-platform-engine:1.1.5') {
+        exclude group: 'org.junit.platform'
+        exclude group: 'org.jetbrains.kotlin'
+    }
 }
 
-
-group = 'com.tomtresansky.gradle.plugin'
-version = '0.0.1'
+junitPlatform {
+    filters {
+        engines {
+            include 'spek'
+        }
+    }
+}
 
 uploadArchives {
     repositories {

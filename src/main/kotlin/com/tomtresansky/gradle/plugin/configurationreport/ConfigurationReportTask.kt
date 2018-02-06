@@ -1,7 +1,8 @@
 package com.tomtresansky.gradle.plugin.configurationreport
 
+import com.tomtresansky.gradle.plugin.configurationreport.internal.ConfigurationDataExtractor
+import com.tomtresansky.gradle.plugin.configurationreport.internal.ConfigurationNode
 import org.gradle.api.Project
-import org.gradle.api.artifacts.Configuration
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.diagnostics.AbstractReportTask
 import org.gradle.api.tasks.diagnostics.internal.TextReportRenderer
@@ -21,6 +22,7 @@ open class ConfigurationReportTask : AbstractReportTask() {
     }
 
     private val renderer = TextReportRenderer()
+    private val extractor = ConfigurationDataExtractor()
 
     @OutputFile
     lateinit var outputFilePath: Path
@@ -30,39 +32,18 @@ open class ConfigurationReportTask : AbstractReportTask() {
     }
 
     override fun generate(project: Project?) {
-        val dotFile = extractConfigurationData(project!!)
+        val configInfo = extractor.extractConfigurationData(project ?: throw NullPointerException("project is null"))
+        val dotFile = writeDotFile(project, configInfo)
     }
 
-    private fun extractConfigurationData(project: Project): File {
-        with(project) {
+    fun writeDotFile(project: Project, configInfo : List<ConfigurationNode>): File {
+        with (project) {
             val outputFile = file(outputFilePath).apply { createNewFile() }
-
-            val configInheritanceMap : MutableMap<Configuration, MutableSet<Configuration>> = hashMapOf()
-            configurations.forEach { childConfig ->
-                // TODO("configs without extendsFrom need to be included here")
-                childConfig.extendsFrom.map { parentConfig -> configInheritanceMap.computeIfAbsent(parentConfig, { _ -> hashSetOf() }) }
-                                       .forEach { children -> children.add(childConfig) }
-            }
 
             outputFile.printWriter().use { out ->
                 out.println("digraph Configurations {")
-                configInheritanceMap.forEach { parent, children ->
-                    out.printf("\t${parent.name}")
-
-                    when (children.size) {
-                        0 -> out.print("\r\n")
-                        1 -> out.print(" -> ")
-                        else -> out.print(" -> { ")
-                    }
-
-                    out.print(children.map { it.name }
-                                      .joinToString(separator = ", "))
-
-                    if (children.size > 1) {
-                        out.print(" }")
-                    }
-
-                    out.print(";\r\n")
+                configInfo.forEach { node ->
+                    out.println(node)
                 }
                 out.println('}')
             }
