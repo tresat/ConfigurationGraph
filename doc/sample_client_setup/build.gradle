@@ -11,7 +11,7 @@ buildscript {
     }
 
     dependencies {
-        classpath group: 'com.tomtresansky.gradle.plugin.configurationreport',
+        classpath group: 'com.tomtresansky.gradle.plugin',
                 name: 'ConfigurationReport',
                 version: '0.0.1'
     }
