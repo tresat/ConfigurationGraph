@@ -1,25 +1,30 @@
 buildscript {
+    ext.versions = [
+        kotlin: '1.2.21',
+        mockito: '2.15.0',
+        spek: '1.1.5'
+    ]
+
     dependencies {
         classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'
     }
 }
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.2.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.2.21' // Should match ext.versions.kotlin
     
     // Simplifies adding plugin under test to a classpath
     // https://docs.gradle.org/current/userguide/javaGradle_plugin.html
     id 'java-gradle-plugin'
 }
 
-apply plugin: 'maven'
+apply plugin: 'maven' // For local publishing
 apply plugin: 'org.junit.platform.gradle.plugin'
-
-// This should probably match the kotlin plugin version in the plugins config block
-project.ext.kotlin_version = '1.2.21'
 
 group = 'com.tomtresansky.gradle.plugin'
 version = '0.0.1'
+
+defaultTasks 'build'
 
 repositories {
     jcenter()
@@ -28,19 +33,22 @@ repositories {
 
 dependencies {
     compileOnly gradleApi()
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
     implementation 'guru.nidi:graphviz-java:0.2.3'
     implementation 'com.google.guava:guava:24.0-jre'
     
     testCompileOnly gradleTestKit()
-    testImplementation('org.jetbrains.spek:spek-api:1.1.5') {
+
+    testImplementation("org.jetbrains.spek:spek-api:${versions.spek}") {
         exclude group: 'org.jetbrains.kotlin' // We are probably using a newer version of Kotlin
     }
-
+    testImplementation "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.assertj:assertj-core:3.6.2'
+    testImplementation "org.mockito:mockito-core:${versions.mockito}"
 
-    testRuntime('org.jetbrains.spek:spek-junit-platform-engine:1.1.5') {
+    testRuntime("org.jetbrains.spek:spek-junit-platform-engine:${versions.spek}") {
         exclude group: 'org.junit.platform'
         exclude group: 'org.jetbrains.kotlin'
     }
@@ -76,3 +84,19 @@ task wrapper(type: Wrapper) {
     // Get gradle-all distribution that contains not only the binaries but also the sources for development
     distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }
+
+// TODO: Experiment with Alternate means of creating mock maker file
+// https://github.com/hhariri/mockito-sample/blob/master/build.gradle#L16
+/*
+task createTestResources << {
+    def mockMakerFile = new File("$projectDir/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker")
+    if (System.env.MOCK_MAKER != null) {
+        logger.info("Using MockMaker ${System.env.MOCK_MAKER}")
+        mockMakerFile.parentFile.mkdirs()
+        mockMakerFile.createNewFile()
+        mockMakerFile.write(System.env.MOCK_MAKER)
+    } else {
+        logger.info("Using default MockMaker")
+    }
+}
+*/
