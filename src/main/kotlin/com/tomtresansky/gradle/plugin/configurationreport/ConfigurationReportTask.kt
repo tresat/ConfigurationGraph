@@ -33,10 +33,10 @@ open class ConfigurationReportTask : AbstractReportTask() {
 
     override fun generate(project: Project?) {
         val configInfo = extractor.extractConfigurationData(project ?: throw NullPointerException("project is null"))
-        val dotFile = writeDotFile(project, configInfo)
+        writeDotFile(project, configInfo)
     }
 
-    fun writeDotFile(project: Project, configInfo : List<ConfigurationNode>): File {
+    private fun writeDotFile(project: Project, configInfo : List<ConfigurationNode>): File {
         with (project) {
             val outputFile = file(outputFilePath).apply { createNewFile() }
 
