@@ -91,9 +91,16 @@ object GraphVizConfigurationGraphWriterTest: Spek({
                     |${'\t'}Empty2;
                     |}
                     |""".trimMargin()
+                        .useSystemLineSeparator()
+
 
                 assertEquals(expected, result)
             }
         }
     }
 })
+
+fun String.useSystemLineSeparator(): String {
+    val sep = System.getProperty("line.separator")
+    return this.replace("\n", sep)
+}

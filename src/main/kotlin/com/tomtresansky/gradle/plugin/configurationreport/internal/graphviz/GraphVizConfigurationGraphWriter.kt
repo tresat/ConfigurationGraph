@@ -11,7 +11,6 @@ class GraphVizConfigurationGraphWriter : IConfigurationGraphWriter {
     override fun writeGraph(graph: ConfigurationGraph, output: OutputStream) {
         PrintWriter(output).use { out ->
             out.println("digraph ${graph.title} {")
-            out.println("boo")
             graph.nodes.forEach { node ->
                 out.println(stringifyNode(node))
             }
