@@ -1,13 +1,15 @@
-package com.tomtresansky.gradle.plugin.configurationreport.internal
+package com.tomtresansky.gradle.plugin.configurationreport.graph
 
 import com.google.common.annotations.VisibleForTesting
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 
 class ConfigurationDataExtractor {
-    fun extractConfigurationData(project: Project): List<ConfigurationNode> {
-        val configs: MutableList<Configuration> = project.configurations.toCollection(mutableListOf())
-        return extractConfigurationData(configs)
+    fun extractConfigurationData(project: Project): ConfigurationGraph {
+        val configs = project.configurations.toCollection(mutableListOf())
+        val nodes = extractConfigurationData(configs)
+
+        return ConfigurationGraph(project.name, nodes)
     }
 
     @VisibleForTesting

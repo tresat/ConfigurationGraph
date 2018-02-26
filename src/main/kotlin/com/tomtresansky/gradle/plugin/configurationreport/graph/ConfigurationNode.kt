@@ -1,4 +1,4 @@
-package com.tomtresansky.gradle.plugin.configurationreport.internal
+package com.tomtresansky.gradle.plugin.configurationreport.graph
 
 import org.gradle.api.artifacts.Configuration
 
