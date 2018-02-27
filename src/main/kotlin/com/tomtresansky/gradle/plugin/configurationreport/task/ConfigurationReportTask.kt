@@ -1,13 +1,17 @@
 package com.tomtresansky.gradle.plugin.configurationreport.task
 
+import com.google.common.annotations.VisibleForTesting
 import com.tomtresansky.gradle.plugin.configurationreport.ConfigurationReportPluginExtension
 import com.tomtresansky.gradle.plugin.configurationreport.ReportFormat
 import com.tomtresansky.gradle.plugin.configurationreport.engine.graphviz.GraphVizConfigurationReportGenerator
 import com.tomtresansky.gradle.plugin.configurationreport.engine.text.TextConfigurationReportGenerator
-import com.tomtresansky.gradle.plugin.configurationreport.graph.IConfigurationReportGenerator
+import com.tomtresansky.gradle.plugin.configurationreport.graph.ConfigurationGraph
 import org.gradle.api.DefaultTask
-import org.gradle.api.Project
+import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
+import java.io.File
+import java.io.FileInputStream
+import java.io.ObjectInputStream
 
 /**
  * Task to output a report containing a graph of projects' configurations' information.
@@ -21,15 +25,32 @@ open class ConfigurationReportTask : DefaultTask() {
         const val TASK_DESCRIPTION = "Generates an HTML report about the project's configurations and their relationships."
     }
 
+    @InputFile
+    lateinit var graphFile: File
+
     @TaskAction
     fun generate() {
         val extension: ConfigurationReportPluginExtension = project.extensions.findByName(ConfigurationReportPluginExtension.NAME) as ConfigurationReportPluginExtension
 
-        var generator = when (extension.format) {
+        val generator = when (extension.format) {
             ReportFormat.GRAPH_VIZ -> GraphVizConfigurationReportGenerator(extension.baseDir)
             ReportFormat.TEXT -> TextConfigurationReportGenerator()
         }
 
-        generator.generate(extension.graph ?: throw IllegalStateException("Graph not available!"))
+        val graph = readGraph(graphFile)
+        generator.generate(graph)
+    }
+
+    @VisibleForTesting
+    internal fun readGraph(graphFile: File): ConfigurationGraph {
+        ObjectInputStream(FileInputStream(graphFile)).use { inFile ->
+            val graph = inFile.readObject()
+
+            //Cast it back into a Map
+            when (graph) {
+                is ConfigurationGraph -> return graph
+                else -> throw IllegalStateException("Deserialization of congifuration graph failed!")
+            }
+        }
     }
 }

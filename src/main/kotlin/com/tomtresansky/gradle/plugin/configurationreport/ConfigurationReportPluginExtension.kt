@@ -12,5 +12,4 @@ open class ConfigurationReportPluginExtension(project: Project): ReportingExtens
     }
 
     var format = DEFAULT_FORMAT
-    var graph: ConfigurationGraph? = null
 }

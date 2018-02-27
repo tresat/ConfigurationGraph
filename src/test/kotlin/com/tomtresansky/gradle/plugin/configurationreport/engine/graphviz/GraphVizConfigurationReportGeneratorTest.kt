@@ -31,8 +31,6 @@ object GraphVizConfigurationReportGeneratorTest : Spek({
             val outputFile = generator.generate(graph)
 
             it("should produce a report file") {
-                val result = outputFile
-
                 assertTrue(outputFile.exists())
             }
         }

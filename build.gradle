@@ -14,6 +14,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.2.21' // Should match ext.versions.kotlin
     
     // Simplifies adding plugin under test to a classpath
+    // Automatically adds gradleApi(), gradleTestKit() deps automatically
     // https://docs.gradle.org/current/userguide/javaGradle_plugin.html
     id 'java-gradle-plugin'
 }
@@ -32,13 +33,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly gradleApi()
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
     implementation 'guru.nidi:graphviz-java:0.2.3'
     implementation 'com.google.guava:guava:24.0-jre'
-    
-    testCompileOnly gradleTestKit()
 
     testImplementation("org.jetbrains.spek:spek-api:${versions.spek}") {
         exclude group: 'org.jetbrains.kotlin' // We are probably using a newer version of Kotlin
@@ -84,6 +81,19 @@ task wrapper(type: Wrapper) {
     // Get gradle-all distribution that contains not only the binaries but also the sources for development
     distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }
+
+// Per: https://docs.gradle.org/current/userguide/javaGradle_plugin.html
+// This is a way to avoid keeping the META-INF dir actually around for the gradle plugin properties file
+/*
+gradlePlugin {
+    plugins {
+        simplePlugin {
+            id = 'org.gradle.sample.simple-plugin'
+            implementationClass = 'org.gradle.sample.SimplePlugin'
+        }
+    }
+}
+*/
 
 // TODO: Experiment with Alternate means of creating mock maker file
 // https://github.com/hhariri/mockito-sample/blob/master/build.gradle#L16
