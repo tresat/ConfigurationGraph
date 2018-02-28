@@ -17,10 +17,16 @@ plugins {
     // Automatically adds gradleApi(), gradleTestKit() deps automatically
     // https://docs.gradle.org/current/userguide/javaGradle_plugin.html
     id 'java-gradle-plugin'
+
+    id 'org.sonarqube' version '2.6'
+
+    // Coveralls setup, via: https://github.com/kt3k/coveralls-gradle-plugin
+    id 'net.saliman.cobertura' version '2.3.1'
+    id 'com.github.kt3k.coveralls' version '2.8.2'
 }
 
 apply plugin: 'maven' // For local publishing
-apply plugin: 'org.junit.platform.gradle.plugin'
+apply plugin: 'org.junit.platform.gradle.plugin' // TODO: remove after upgrading to gradle 4.6
 
 group = 'com.tomtresansky.gradle.plugin'
 version = '0.0.1'
@@ -58,6 +64,8 @@ junitPlatform {
         }
     }
 }
+
+cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
 
 uploadArchives {
     repositories {
