@@ -1,7 +1,0 @@
-* Tools to try:
-
-https://codecov.io/#
-- an alternative to coveralls
-
-https://waffle.io/
-- track github issues, pull requests, etc.
