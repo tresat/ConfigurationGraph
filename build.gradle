@@ -60,6 +60,14 @@ junitPlatform {
             include 'spek'
         }
     }
+
+    enableStandardTestTask true // Per: https://stackoverflow.com/a/44882712/187206
+}
+
+test {
+    jacoco {
+        includeNoLocationClasses = true
+    }
 }
 
 jacocoTestReport {
@@ -69,7 +77,7 @@ jacocoTestReport {
     }
 }
 
-// Needed for codecov, see: https://vorba.ch/2015/java-gradle-travis-jacoco-codecov.html
+// Needed for codecov
 check.dependsOn jacocoTestReport
 
 uploadArchives {

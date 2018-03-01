@@ -35,7 +35,7 @@ class ConfigurationReportPluginTest {
         val extractTask = project.tasks.getByName(ExtractConfigurationGraphTask.TASK_NAME)
 
         assertThat(reportTask).isNotNull()
-                              .isInstanceOf(ExtractConfigurationGraphTask::class.java)
+                              .isInstanceOf(ConfigurationReportTask::class.java)
 
         assertThat(reportTask.dependsOn.contains(extractTask))
     }
