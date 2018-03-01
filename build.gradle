@@ -69,6 +69,9 @@ jacocoTestReport {
     }
 }
 
+// Needed for codecov, see: https://vorba.ch/2015/java-gradle-travis-jacoco-codecov.html
+check.dependsOn jacocoTestReport
+
 uploadArchives {
     repositories {
         mavenDeployer {
