@@ -6,8 +6,10 @@ import com.tomtresansky.gradle.plugin.configurationreport.ReportFormat
 import com.tomtresansky.gradle.plugin.configurationreport.engine.graphviz.GraphVizConfigurationReportGenerator
 import com.tomtresansky.gradle.plugin.configurationreport.engine.text.TextConfigurationReportGenerator
 import com.tomtresansky.gradle.plugin.configurationreport.graph.ConfigurationGraph
+import com.tomtresansky.gradle.plugin.configurationreport.graph.IConfigurationReportGenerator
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.io.FileInputStream
@@ -25,18 +27,23 @@ open class ConfigurationReportTask : DefaultTask() {
         const val TASK_DESCRIPTION = "Generates an HTML report about the project's configurations and their relationships."
     }
 
+    private val generator: IConfigurationReportGenerator
+    init {
+        val extension: ConfigurationReportPluginExtension = project.extensions.findByName(ConfigurationReportPluginExtension.NAME) as ConfigurationReportPluginExtension
+        generator = when (extension.format) {
+            ReportFormat.GRAPH_VIZ -> GraphVizConfigurationReportGenerator(extension.outputDir)
+            ReportFormat.TEXT -> TextConfigurationReportGenerator()
+        }
+    }
+
     @InputFile
     lateinit var graphFile: File
 
+    @OutputFile
+    val reportFile: File = generator.reportFile
+
     @TaskAction
     fun generate() {
-        val extension: ConfigurationReportPluginExtension = project.extensions.findByName(ConfigurationReportPluginExtension.NAME) as ConfigurationReportPluginExtension
-
-        val generator = when (extension.format) {
-            ReportFormat.GRAPH_VIZ -> GraphVizConfigurationReportGenerator(extension.baseDir)
-            ReportFormat.TEXT -> TextConfigurationReportGenerator()
-        }
-
         val graph = readGraph(graphFile)
         generator.generate(graph)
     }

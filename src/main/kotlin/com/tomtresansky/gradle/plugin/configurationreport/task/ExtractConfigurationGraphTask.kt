@@ -3,7 +3,9 @@ package com.tomtresansky.gradle.plugin.configurationreport.task
 import com.tomtresansky.gradle.plugin.configurationreport.graph.ConfigurationDataExtractor
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.internal.artifacts.configurations.DefaultConfiguration
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -24,19 +26,21 @@ open class ExtractConfigurationGraphTask : DefaultTask() {
         const val DEFAULT_GRAPH_OUTPUT_FILE_NAME = "configuration_graph.graph"
     }
 
+    private val extractor = ConfigurationDataExtractor()
+
     @OutputFile
-    lateinit var outputFile: File
+    lateinit var graphFile: File
 
     @Input
-    private val configs: Set<Configuration> = project.configurations
+    private val graph = extractor.extractConfigurationData(project)
 
     @TaskAction
     fun extract() {
-        val graph = ConfigurationDataExtractor().extractConfigurationData(project)
-
-        outputFile.createNewFile()
+        graphFile.createNewFile()
 
         // Serialize the graph to a file
-        ObjectOutputStream(FileOutputStream(outputFile)).use{ out -> out.writeObject(graph)}
+        ObjectOutputStream(FileOutputStream(graphFile)).use{ out ->
+            out.writeObject(graph)
+        }
     }
 }

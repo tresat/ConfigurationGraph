@@ -19,20 +19,15 @@ class GraphVizConfigurationReportGenerator(val outputDir: File) : IConfiguration
         const val GRAPH_WIDTH = 600
     }
 
-    var dotFileName = DEFAULT_DOT_FILE_NAME
-    var pngFileName = DEFAULT_PNG_FILE_NAME
-    var reportFileName = DEFAULT_REPORT_FILE_NAME
+    override var reportFile = Paths.get(outputDir.path, DEFAULT_REPORT_FILE_NAME).toFile()
+    var dotFile = Paths.get(outputDir.path, DEFAULT_DOT_FILE_NAME).toFile()
+    var pngFile = Paths.get(outputDir.path, DEFAULT_PNG_FILE_NAME).toFile()
 
     val graphFormatter = ConfigurationGraphDotFormatter()
 
     override fun generate(graph: ConfigurationGraph): File {
-        val dotFile = Paths.get(outputDir.path, dotFileName).toFile()
         writeDotFile(graph, dotFile)
-
-        val pngFile = Paths.get(outputDir.path, pngFileName).toFile()
         writePngFile(dotFile, pngFile)
-
-        val reportFile = Paths.get(outputDir.path, reportFileName).toFile()
         writeReport(pngFile, reportFile)
 
         return reportFile

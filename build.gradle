@@ -19,10 +19,12 @@ plugins {
     id 'java-gradle-plugin'
 
     id 'org.sonarqube' version '2.6'
+    id 'com.vanniktech.dependency.graph.generator' version '0.3.0'
 }
 
 apply plugin: 'maven' // For local publishing
 apply plugin: 'jacoco' // For codecov.io
+apply plugin: 'project-report'
 apply plugin: 'org.junit.platform.gradle.plugin' // TODO: remove after upgrading to gradle 4.6
 
 group = 'com.tomtresansky.gradle.plugin'
@@ -51,6 +53,20 @@ dependencies {
     testRuntime("org.jetbrains.spek:spek-junit-platform-engine:${versions.spek}") {
         exclude group: 'org.junit.platform'
         exclude group: 'org.jetbrains.kotlin'
+    }
+}
+
+/*
+ * By default, version 0.3.0 of the dependency graph generator plugin outputs to project root.  Put it in a
+ * proper reports sub-directory.  Since it does not create tasks for each generator to actually do the graph
+ * generation until AFTER project evaluation, have to tweak the task configuration then.
+ */
+project.afterEvaluate {
+    def depReportDir = "${project.reportsDir}/dependency-graph"
+
+    generateDependencyGraph {
+        outputFileDot = file("$depReportDir/dependency-graph.dot")
+        outputFileImage = file("$depReportDir/dependency-graph.png")
     }
 }
 

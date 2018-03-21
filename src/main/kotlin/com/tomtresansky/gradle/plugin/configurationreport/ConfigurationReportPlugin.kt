@@ -9,32 +9,36 @@ import java.io.File
 import java.nio.file.Paths
 
 class ConfigurationReportPlugin : ReportingBasePlugin() {
+    lateinit var extension: ConfigurationReportPluginExtension
+    lateinit var extractTask: ExtractConfigurationGraphTask
+    lateinit var reportTask: ConfigurationReportTask
+
     override fun apply(project: ProjectInternal) {
         project.plugins.apply(ProjectReportsPlugin::class.java)
 
-        val extension = createExtension(project)
-        val extractTask = createExtractTask(project, extension.baseDir)
-        createReportTask(project, extractTask)
+        extension = createExtension(project)
+        extractTask = createExtractTask(project)
+        reportTask = createReportTask(project)
     }
 
     private fun createExtension(project: ProjectInternal): ConfigurationReportPluginExtension {
         return project.extensions.create(ConfigurationReportPluginExtension.NAME, ConfigurationReportPluginExtension::class.java, project)
     }
 
-    private fun createExtractTask(project: ProjectInternal, outputDir: File): ExtractConfigurationGraphTask {
+    private fun createExtractTask(project: ProjectInternal): ExtractConfigurationGraphTask {
         val extractTask: ExtractConfigurationGraphTask = project.tasks.create(ExtractConfigurationGraphTask.TASK_NAME,
                                                                               ExtractConfigurationGraphTask::class.java)
         with(extractTask) {
             description = ExtractConfigurationGraphTask.TASK_DESCRIPTION
             group = ExtractConfigurationGraphTask.TASK_GROUP
 
-            outputFile = Paths.get(outputDir.path, ExtractConfigurationGraphTask.DEFAULT_GRAPH_OUTPUT_FILE_NAME).toFile()
+            graphFile = Paths.get(extension.outputDir.path, ExtractConfigurationGraphTask.DEFAULT_GRAPH_OUTPUT_FILE_NAME).toFile()
         }
 
         return extractTask
     }
 
-    private fun createReportTask(project: ProjectInternal, extractTask: ExtractConfigurationGraphTask): ConfigurationReportTask {
+    private fun createReportTask(project: ProjectInternal): ConfigurationReportTask {
         val reportTask: ConfigurationReportTask = project.tasks.create(ConfigurationReportTask.TASK_NAME, ConfigurationReportTask::class.java)
         with (reportTask) {
             description = ConfigurationReportTask.TASK_DESCRIPTION
@@ -42,7 +46,7 @@ class ConfigurationReportPlugin : ReportingBasePlugin() {
 
             dependsOn(extractTask)
 
-            graphFile = extractTask.outputFile
+            graphFile = extractTask.graphFile
         }
 
         return reportTask
