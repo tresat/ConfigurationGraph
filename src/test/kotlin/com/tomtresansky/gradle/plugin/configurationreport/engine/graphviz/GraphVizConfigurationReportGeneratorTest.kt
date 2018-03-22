@@ -24,8 +24,8 @@ object GraphVizConfigurationReportGeneratorTest : Spek({
             val mockEmptyConfig2 = Mockito.mock(Configuration::class.java).apply {
                 Mockito.`when`(this.name).thenReturn("Empty2")
             }
-            val node1 = ConfigurationNode(mockEmptyConfig1)
-            val node2 = ConfigurationNode(mockEmptyConfig2)
+            val node1 = ConfigurationNode(mockEmptyConfig1.name)
+            val node2 = ConfigurationNode(mockEmptyConfig2.name)
             val graph = ConfigurationGraph("Test", listOf(node1, node2))
 
             val outputFile = generator.generate(graph)

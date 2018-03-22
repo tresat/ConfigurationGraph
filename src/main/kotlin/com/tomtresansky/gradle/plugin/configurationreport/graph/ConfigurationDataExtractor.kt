@@ -31,10 +31,10 @@ class ConfigurationDataExtractor {
             // Check for configurations with either known children, or children already present in the map
             for ((parent, children) in extensionMap) {
                 if (children.isEmpty()) {
-                    results.put(parent, ConfigurationNode(parent))
+                    results.put(parent, ConfigurationNode(parent.name))
                 } else if (results.keys.containsAll(children)) {
                     val childrenNodes = children.map { child -> results[child] as ConfigurationNode }
-                    results.put(parent, ConfigurationNode(parent, childrenNodes.sortedBy { it.config.name }))
+                    results.put(parent, ConfigurationNode(parent.name, childrenNodes.sortedBy { it.configName }))
                 }
             }
 
@@ -43,6 +43,6 @@ class ConfigurationDataExtractor {
         }
 
         // Return the sorted list of config nodes
-        return results.values.sortedBy { it.config.name }
+        return results.values.sortedBy { it.configName }
     }
 }

@@ -24,7 +24,7 @@ open class ConfigurationReportTask : DefaultTask() {
     companion object {
         const val TASK_NAME = "configurationReport"
         const val TASK_GROUP = "reporting"
-        const val TASK_DESCRIPTION = "Generates an HTML report about the project's configurations and their relationships."
+        const val TASK_DESCRIPTION = "Generates an Html report about the project's configurations and their relationships."
     }
 
     private val generator: IConfigurationReportGenerator

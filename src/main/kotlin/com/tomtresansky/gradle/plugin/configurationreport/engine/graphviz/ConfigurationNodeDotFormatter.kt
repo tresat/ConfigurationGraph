@@ -5,7 +5,7 @@ import com.tomtresansky.gradle.plugin.configurationreport.graph.ConfigurationNod
 class ConfigurationNodeDotFormatter {
     fun format(node: ConfigurationNode): String {
         with (StringBuilder()) {
-            append("\t${node.config.name}")
+            append("\t${node.configName}")
 
             when (node.children.size) {
                 0 -> {} // do nothing
@@ -13,7 +13,7 @@ class ConfigurationNodeDotFormatter {
                 else -> append(" -> { ")
             }
 
-            append(node.children.joinToString(separator = ", ") { e -> e.config.name })
+            append(node.children.joinToString(separator = ", ") { e -> e.configName })
 
             when (node.children.size) {
                 0, 1 -> {} // do nothing

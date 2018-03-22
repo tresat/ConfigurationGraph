@@ -4,7 +4,7 @@ package com.tomtresansky.gradle.plugin.configurationreport.html
  * This is an example of a Type-Safe Groovy-style Builder
  *
  * Builders are good for declaratively describing data in your code.
- * In this example we show how to describe an HTML page in Kotlin.
+ * In this example we show how to describe an Html page in Kotlin.
  *
  * See this page for details:
  * http://kotlinlang.org/docs/reference/type-safe-builders.html
@@ -46,7 +46,6 @@ abstract class Tag(val name: String) : Element {
         return builder.toString()
     }
 
-
     override fun toString(): String {
         val builder = StringBuilder()
         render(builder, "")
@@ -60,7 +59,7 @@ abstract class TagWithText(name: String) : Tag(name) {
     }
 }
 
-class HTML() : TagWithText("html") {
+class Html() : TagWithText("html") {
     fun head(init: Head.() -> Unit) = initTag(Head(), init)
 
     fun body(init: Body.() -> Unit) = initTag(Body(), init)
@@ -76,20 +75,25 @@ abstract class BodyTag(name: String) : TagWithText(name) {
     fun b(init: B.() -> Unit) = initTag(B(), init)
     fun p(init: P.() -> Unit) = initTag(P(), init)
     fun h1(init: H1.() -> Unit) = initTag(H1(), init)
-    fun ul(init: UL.() -> Unit) = initTag(UL(), init)
+    fun ul(init: Ul.() -> Unit) = initTag(Ul(), init)
     fun a(href: String, init: A.() -> Unit) {
         val a = initTag(A(), init)
         a.href = href
     }
+    fun img(src: String, alt: String, init: Img.() -> Unit) {
+        val img = initTag(Img(), init)
+        img.src = src
+        img.alt = alt
+    }
 }
 
 class Body() : BodyTag("body")
-class UL() : BodyTag("ul") {
-    fun li(init: LI.() -> Unit) = initTag(LI(), init)
+class Ul() : BodyTag("ul") {
+    fun li(init: Li.() -> Unit) = initTag(Li(), init)
 }
 
 class B() : BodyTag("b")
-class LI() : BodyTag("li")
+class Li() : BodyTag("li")
 class P() : BodyTag("p")
 class H1() : BodyTag("h1")
 
@@ -101,8 +105,22 @@ class A() : BodyTag("a") {
         }
 }
 
-fun html(init: HTML.() -> Unit): HTML {
-    val html = HTML()
+class Img() : BodyTag("img") {
+    public var src: String
+        get() = attributes["src"]!!
+        set(value) {
+            attributes["src"] = value
+        }
+
+    public var alt: String
+        get() = attributes["alt"]!!
+        set(value) {
+            attributes["alt"] = value
+        }
+}
+
+fun html(init: Html.() -> Unit): Html {
+    val html = Html()
     html.init()
     return html
 }

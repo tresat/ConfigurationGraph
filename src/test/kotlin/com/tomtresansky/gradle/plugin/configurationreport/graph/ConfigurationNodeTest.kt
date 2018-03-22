@@ -17,12 +17,12 @@ object ConfigurationNodeTest: Spek({
             val mockConfig = mock(Configuration::class.java).apply {
                 `when`(this.name).thenReturn("Empty")
             }
-            builder.config = mockConfig
+            builder.configName = mockConfig.name
 
             val result = builder.build()
 
             it("should have properly built an empty node named Empty") {
-                assertEquals("Empty", result.config.name)
+                assertEquals("Empty", result.configName)
                 assertThat(result.children).isNotNull()
                                            .isEmpty()
             }

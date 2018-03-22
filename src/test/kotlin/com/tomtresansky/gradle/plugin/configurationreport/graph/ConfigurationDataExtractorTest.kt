@@ -31,7 +31,7 @@ object ConfigurationDataExtractorTest: Spek({
            val configGraph = extractor.extractConfigurationData(configs)
 
            it("should properly describe the graph") {
-               val configNode = ConfigurationNode(mockConfig, emptyList())
+               val configNode = ConfigurationNode(mockConfig.name, emptyList())
 
                assertThat(listOf(configNode)).containsAll(configGraph)
            }
@@ -49,8 +49,8 @@ object ConfigurationDataExtractorTest: Spek({
            val configGraph = extractor.extractConfigurationData(configs)
 
            it("should properly describe the graph") {
-            val subConfigNode = ConfigurationNode(mockSubConfig, emptyList())
-               val baseConfigNode = ConfigurationNode(mockBaseConfig, listOf(subConfigNode))
+            val subConfigNode = ConfigurationNode(mockSubConfig.name, emptyList())
+               val baseConfigNode = ConfigurationNode(mockBaseConfig.name, listOf(subConfigNode))
 
                assertThat(listOf(baseConfigNode, subConfigNode)).containsAll(configGraph)
            }
@@ -72,9 +72,9 @@ object ConfigurationDataExtractorTest: Spek({
            val configGraph = extractor.extractConfigurationData(configs)
 
            it("should properly describe the graph") {
-               val sub1ConfigNode = ConfigurationNode(mockSub1Config, emptyList())
-               val sub2ConfigNode = ConfigurationNode(mockSub2Config, emptyList())
-               val baseConfigNode = ConfigurationNode(mockBaseConfig, listOf(sub1ConfigNode, sub2ConfigNode))
+               val sub1ConfigNode = ConfigurationNode(mockSub1Config.name, emptyList())
+               val sub2ConfigNode = ConfigurationNode(mockSub2Config.name, emptyList())
+               val baseConfigNode = ConfigurationNode(mockBaseConfig.name, listOf(sub1ConfigNode, sub2ConfigNode))
 
                assertThat(listOf(baseConfigNode, sub1ConfigNode, sub2ConfigNode)).containsAll(configGraph)
            }

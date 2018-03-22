@@ -17,7 +17,7 @@ object ConfigurationNodeDotFormatterTest : Spek({
             val mockEmptyConfig = Mockito.mock(Configuration::class.java).apply {
                 Mockito.`when`(this.name).thenReturn("Empty")
             }
-            val node = ConfigurationNode(mockEmptyConfig)
+            val node = ConfigurationNode(mockEmptyConfig.name)
 
             val result = formatter.format(node)
             it("should produce the expected String") {
@@ -33,8 +33,8 @@ object ConfigurationNodeDotFormatterTest : Spek({
                 Mockito.`when`(this.name).thenReturn("Parent")
                 Mockito.`when`(this.extendsFrom).thenReturn(setOf(mockChildConfig))
             }
-            val childNode = ConfigurationNode(mockChildConfig)
-            val parentNode = ConfigurationNode(mockParentConfig, listOf(childNode))
+            val childNode = ConfigurationNode(mockChildConfig.name)
+            val parentNode = ConfigurationNode(mockParentConfig.name, listOf(childNode))
 
             val result = formatter.format(parentNode)
             it("should produce the expected String") {
@@ -53,9 +53,9 @@ object ConfigurationNodeDotFormatterTest : Spek({
                 Mockito.`when`(this.name).thenReturn("Parent")
                 Mockito.`when`(this.extendsFrom).thenReturn(setOf(mockChild1Config, mockChild2Config))
             }
-            val child1Node = ConfigurationNode(mockChild1Config)
-            val child2Node = ConfigurationNode(mockChild2Config)
-            val parentNode = ConfigurationNode(mockParentConfig, listOf(child1Node, child2Node))
+            val child1Node = ConfigurationNode(mockChild1Config.name)
+            val child2Node = ConfigurationNode(mockChild2Config.name)
+            val parentNode = ConfigurationNode(mockParentConfig.name, listOf(child1Node, child2Node))
 
             val result = formatter.format(parentNode)
             it("should produce the expected String") {

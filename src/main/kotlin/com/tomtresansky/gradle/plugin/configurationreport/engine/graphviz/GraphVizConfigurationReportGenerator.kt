@@ -15,8 +15,8 @@ class GraphVizConfigurationReportGenerator(val outputDir: File) : IConfiguration
         const val DEFAULT_PNG_FILE_NAME = "configuration_graph.png"
         const val DEFAULT_REPORT_FILE_NAME = "configuration_report.html"
 
-        const val GRAPH_HEIGHT = 600
-        const val GRAPH_WIDTH = 600
+        const val GRAPH_HEIGHT = 1200
+        const val GRAPH_WIDTH = 1200
     }
 
     override var reportFile = Paths.get(outputDir.path, DEFAULT_REPORT_FILE_NAME).toFile()

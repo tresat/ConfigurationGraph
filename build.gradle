@@ -6,7 +6,7 @@ buildscript {
     ]
 
     dependencies {
-        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.1.0'
     }
 }
 
@@ -25,7 +25,7 @@ plugins {
 apply plugin: 'maven' // For local publishing
 apply plugin: 'jacoco' // For codecov.io
 apply plugin: 'project-report'
-apply plugin: 'org.junit.platform.gradle.plugin' // TODO: remove after upgrading to gradle 4.6
+apply plugin: 'org.junit.platform.gradle.plugin'
 
 group = 'com.tomtresansky.gradle.plugin'
 version = '0.0.1'
@@ -34,7 +34,10 @@ defaultTasks 'build'
 
 repositories {
     jcenter()
-    maven { url 'http://dl.bintray.com/jetbrains/spek' }
+
+    maven {
+        url 'http://dl.bintray.com/jetbrains/spek'
+    }
 }
 
 dependencies {
@@ -51,8 +54,7 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
 
     testRuntime("org.jetbrains.spek:spek-junit-platform-engine:${versions.spek}") {
-        exclude group: 'org.junit.platform'
-        exclude group: 'org.jetbrains.kotlin'
+        exclude group: 'org.jetbrains.kotlin' // We are probably using a newer version of Kotlin
     }
 }
 
@@ -68,16 +70,6 @@ project.afterEvaluate {
         outputFileDot = file("$depReportDir/dependency-graph.dot")
         outputFileImage = file("$depReportDir/dependency-graph.png")
     }
-}
-
-junitPlatform {
-    filters {
-        engines {
-            include 'spek'
-        }
-    }
-
-    enableStandardTestTask true // Per: https://stackoverflow.com/a/44882712/187206
 }
 
 test {
