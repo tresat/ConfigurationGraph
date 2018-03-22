@@ -1,6 +1,6 @@
 buildscript {
     ext.versions = [
-        kotlin: '1.2.21',
+        kotlin: '1.2.30',
         mockito: '2.15.0',
         spek: '1.1.5'
     ]
@@ -11,7 +11,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.2.21' // Should match ext.versions.kotlin
+    id 'org.jetbrains.kotlin.jvm' version '1.2.30' // Should match ext.versions.kotlin
     
     // Simplifies adding plugin under test to a classpath
     // Automatically adds gradleApi(), gradleTestKit() deps automatically

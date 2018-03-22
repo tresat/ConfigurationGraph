@@ -1,7 +1,9 @@
 package com.tomtresansky.gradle.plugin.configurationreport
 
+import com.tomtresansky.gradle.plugin.configurationreport.engine.graphviz.GraphVizConfigurationReportGenerator
 import com.tomtresansky.gradle.plugin.configurationreport.task.ConfigurationReportTask
-import junit.framework.Assert.assertEquals
+import com.tomtresansky.gradle.plugin.configurationreport.task.ExtractConfigurationGraphTask
+import org.junit.Assert.assertEquals
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
@@ -10,6 +12,7 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.io.File
 import java.io.StringWriter
+import java.nio.file.Paths
 
 /**
  *
@@ -25,7 +28,7 @@ class ConfigurationReportPluginIntTest {
 
     @Test // TODO:Categorize me as slow or somethign
     fun runForBasicJavaProject() {
-        val buildFile = testProjectDir.newFile("build.gradle").let { f ->
+        testProjectDir.newFile("build.gradle").let { f ->
             f.writeText("""
                     |plugins {
                     |   id 'com.tomtresansky.gradle.plugin.configurationreport'
@@ -46,8 +49,13 @@ class ConfigurationReportPluginIntTest {
                                  .forwardStdError(stdErrorWriter)
                                  .build()
 
-        // Successful task execution
-        assertEquals(SUCCESS, result.task(":${ConfigurationReportTask.TASK_NAME}")?.getOutcome());
+        val extractTask = result.task(":${ExtractConfigurationGraphTask.TASK_NAME}")
+        val reportTask = result.task(":${ConfigurationReportTask.TASK_NAME}")
+
+        // Successful task executions
+        assertEquals(SUCCESS, extractTask?.getOutcome());
+        assertEquals(SUCCESS, reportTask?.getOutcome());
+
         // No errors output
         assertThat(stdErrorWriter).hasToString("")
 
@@ -56,6 +64,15 @@ class ConfigurationReportPluginIntTest {
         // Reports output directory was created
         assertThat(File(testProjectDir.root, "build/reports")).exists()
         // Configuration Graph output directory was created
-        assertThat(File(testProjectDir.root, "build/reports/${ConfigurationReportPluginExtension.CONFIGURATION_GRAPH_REPORTS_DIR_NAME}")).exists()
-    } // TODO: Continue asserting report file output here
+        val configGraphReportDir = File(testProjectDir.root, "build/reports/${ConfigurationReportPluginExtension.CONFIGURATION_GRAPH_REPORTS_DIR_NAME}")
+        assertThat(configGraphReportDir).exists()
+
+        // Configuration Graph output file was created
+        val graphFile = Paths.get(configGraphReportDir.path, ExtractConfigurationGraphTask.DEFAULT_GRAPH_OUTPUT_FILE_NAME).toFile()
+        assertThat(graphFile).exists()
+
+        // Report file was created
+        val reportFile = Paths.get(configGraphReportDir.path, GraphVizConfigurationReportGenerator.DEFAULT_REPORT_FILE_NAME).toFile()
+        assertThat(reportFile).exists()
+    }
 }
