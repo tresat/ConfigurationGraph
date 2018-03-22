@@ -73,15 +73,25 @@ project.afterEvaluate {
 }
 
 test {
+    useJUnitPlatform()
+
     jacoco {
         includeNoLocationClasses = true
+    }
+}
+
+junitPlatform {
+    filters {
+        engines {
+            include 'spek'
+        }
     }
 }
 
 jacocoTestReport {
     reports {
         xml.enabled true
-        html.enabled false
+        html.enabled true
     }
 }
 
