@@ -11,7 +11,7 @@ buildscript {
     ]
 
     dependencies {
-        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.1.0'
+        classpath "org.junit.platform:junit-platform-gradle-plugin:${versions.junitPlatformVersion}"
     }
 }
 
@@ -45,7 +45,13 @@ repositories {
     }
 }
 
+configurations {
+    junitXmlToHtml
+}
+
 dependencies {
+    junitXmlToHtml 'org.apache.ant:ant-junit:1.9.7'
+
     compile "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
     compile 'guru.nidi:graphviz-java:0.2.3'
     compile 'com.google.guava:guava:24.0-jre'
@@ -93,11 +99,6 @@ test {
         includeNoLocationClasses = true
     }
 
-    reports {
-        junitXml.enabled = true
-        html.enabled = true
-    }
-
     testLogging {
         events "passed", "skipped", "failed"
     }
@@ -109,8 +110,39 @@ junitPlatform {
             include 'spek', 'junit-jupiter', 'junit-vintage'
         }
     }
+}
 
-    logManager 'org.apache.logging.log4j.jul.LogManager'
+/**
+ * Merge all Junit 5 XML test results into a single set of HTML reports.
+ *
+ * See example here:
+ *   https://stackoverflow.com/questions/39444908/how-to-create-an-html-report-for-junit-5-tests/39455463#39455463
+ */
+task generateHtmlTestReports {
+    group = 'reporting'
+    description = 'Merge all Junit 5 XML test results into a single set of HTML reports'
+
+    ext {
+        resultsDir = file("$buildDir/test-results/junit-platform")
+        targetDir = file("$buildDir/reports/junit")
+    }
+
+    doLast {
+        ant.taskdef(name: 'junitreport_internal',
+                classname: 'org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator',
+                classpath: configurations.junitXmlToHtml.asPath)
+
+        ant.junitreport_internal(todir: resultsDir) {
+            fileset(dir: resultsDir, includes: 'TEST-*.xml')
+            report(todir: targetDir, format: 'frames')
+        }
+    }
+}
+
+afterEvaluate {
+    def junitPlatformTestTask = tasks.getByName('junitPlatformTest')
+    generateHtmlTestReports.dependsOn(junitPlatformTestTask)
+    check.dependsOn(generateHtmlTestReports)
 }
 
 jacocoTestReport {
