@@ -2,7 +2,12 @@ buildscript {
     ext.versions = [
         kotlin: '1.2.30',
         mockito: '2.15.0',
-        spek: '1.1.5'
+        spek: '1.1.5',
+        junit4Version: '4.12',
+        junitVintageVersion: '5.1.0',
+        junitPlatformVersion: '1.1.0',
+        junitJupiterVersion: '5.1.0',
+        log4jVersion: '2.9.0'
     ]
 
     dependencies {
@@ -41,21 +46,32 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
-    implementation 'guru.nidi:graphviz-java:0.2.3'
-    implementation 'com.google.guava:guava:24.0-jre'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
+    compile 'guru.nidi:graphviz-java:0.2.3'
+    compile 'com.google.guava:guava:24.0-jre'
 
-    testImplementation("org.jetbrains.spek:spek-api:${versions.spek}") {
+    testCompile("org.jetbrains.spek:spek-api:${versions.spek}") {
         exclude group: 'org.jetbrains.kotlin' // We are probably using a newer version of Kotlin
     }
-    testImplementation "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.assertj:assertj-core:3.6.2'
-    testImplementation "org.mockito:mockito-core:${versions.mockito}"
+    testCompile "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
+    testCompile 'org.assertj:assertj-core:3.6.2'
+    testCompile "org.mockito:mockito-core:${versions.mockito}"
 
     testRuntime("org.jetbrains.spek:spek-junit-platform-engine:${versions.spek}") {
         exclude group: 'org.jetbrains.kotlin' // We are probably using a newer version of Kotlin
     }
+
+    // JUnit Jupiter API and TestEngine implementation
+    testCompile("org.junit.jupiter:junit-jupiter-api:${versions.junitJupiterVersion}")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:${versions.junitJupiterVersion}")
+
+    // If you also want to support JUnit 3 and JUnit 4 tests
+    testCompile("junit:junit:${versions.junit4Version}")
+    testRuntime("org.junit.vintage:junit-vintage-engine:${versions.junitVintageVersion}")
+
+    // To use Log4J's LogManager
+    testRuntime("org.apache.logging.log4j:log4j-core:${versions.log4jVersion}")
+    testRuntime("org.apache.logging.log4j:log4j-jul:${versions.log4jVersion}")
 }
 
 /*
@@ -73,19 +89,28 @@ project.afterEvaluate {
 }
 
 test {
-    useJUnitPlatform()
-
     jacoco {
         includeNoLocationClasses = true
+    }
+
+    reports {
+        junitXml.enabled = true
+        html.enabled = true
+    }
+
+    testLogging {
+        events "passed", "skipped", "failed"
     }
 }
 
 junitPlatform {
     filters {
         engines {
-            include 'spek'
+            include 'spek', 'junit-jupiter', 'junit-vintage'
         }
     }
+
+    logManager 'org.apache.logging.log4j.jul.LogManager'
 }
 
 jacocoTestReport {
