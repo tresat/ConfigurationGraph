@@ -133,10 +133,9 @@ jacocoTestReport {
     dependsOn junitPlatformTest
 
     reports {
-        xml.enabled true // needed for codecov.io
-        xml.destination file("${project.reportsDir}/coverage-xml")
+        xml.enabled true // needed for codecov.io, which expects a /build/reports/jacoco/test/jacocoTestReport.xml
         csv.enabled false
-        html.destination file("${project.reportsDir}/coverage")
+        html.destination file("${project.reportsDir}/jacoco")
     }
 
     executionData = files("$buildDir/jacoco/junitPlatformTest.exec")
