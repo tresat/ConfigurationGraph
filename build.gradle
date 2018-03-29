@@ -133,7 +133,8 @@ jacocoTestReport {
     dependsOn junitPlatformTest
 
     reports {
-        xml.enabled false
+        xml.enabled true // needed for codecov.io
+        xml.destination file("${project.reportsDir}/coverage-xml")
         csv.enabled false
         html.destination file("${project.reportsDir}/coverage")
     }
