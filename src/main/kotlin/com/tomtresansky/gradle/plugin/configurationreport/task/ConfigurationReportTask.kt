@@ -7,7 +7,10 @@ import com.tomtresansky.gradle.plugin.configurationreport.engine.graphviz.GraphV
 import com.tomtresansky.gradle.plugin.configurationreport.engine.text.TextConfigurationReportGenerator
 import com.tomtresansky.gradle.plugin.configurationreport.graph.ConfigurationGraph
 import com.tomtresansky.gradle.plugin.configurationreport.graph.IConfigurationReportGenerator
+import com.tomtresansky.gradle.plugin.configurationreport.reporting.ConfigurationReports
+import com.tomtresansky.gradle.plugin.configurationreport.reporting.DefaultConfigurationReportContainer
 import org.gradle.api.DefaultTask
+import org.gradle.api.reporting.Reporting
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
@@ -20,7 +23,7 @@ import java.io.ObjectInputStream
  *
  * All task classes must be defined as open.  If not set correctly, Gradle will try to proxy your class and fail the build.
  */
-open class ConfigurationReportTask : DefaultTask() {
+open class ConfigurationReportTask : DefaultTask(), Reporting<DefaultConfigurationReportContainer> {
     companion object {
         const val TASK_NAME = "configurationReport"
         const val TASK_GROUP = "reporting"
@@ -59,5 +62,9 @@ open class ConfigurationReportTask : DefaultTask() {
                 else -> throw IllegalStateException("Deserialization of congifuration graph failed!")
             }
         }
+    }
+
+    override fun getReports(): ConfigurationReports {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
