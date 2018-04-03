@@ -7,28 +7,37 @@ import com.tomtresansky.gradle.plugin.configurationreport.engine.graphviz.GraphV
 import com.tomtresansky.gradle.plugin.configurationreport.engine.text.TextConfigurationReportGenerator
 import com.tomtresansky.gradle.plugin.configurationreport.graph.ConfigurationGraph
 import com.tomtresansky.gradle.plugin.configurationreport.graph.IConfigurationReportGenerator
-import com.tomtresansky.gradle.plugin.configurationreport.reporting.ConfigurationReports
+import com.tomtresansky.gradle.plugin.configurationreport.reporting.ConfigurationReportContainer
 import com.tomtresansky.gradle.plugin.configurationreport.reporting.DefaultConfigurationReportContainer
+import groovy.lang.Closure
+import org.gradle.api.Action
 import org.gradle.api.DefaultTask
+import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.reporting.Reporting
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import org.gradle.internal.reflect.Instantiator
 import java.io.File
 import java.io.FileInputStream
 import java.io.ObjectInputStream
+import javax.inject.Inject
 
 /**
  * Task to output a report containing a graph of projects' configurations' information.
  *
  * All task classes must be defined as open.  If not set correctly, Gradle will try to proxy your class and fail the build.
+ *
+ * Constructor uses injected instantiator, retrieved via [ProjectInternal.getServices] to obtain an instance for [reports].
  */
-open class ConfigurationReportTask : DefaultTask(), Reporting<DefaultConfigurationReportContainer> {
+open class ConfigurationReportTask : DefaultTask(), Reporting<ConfigurationReportContainer> {
     companion object {
         const val TASK_NAME = "configurationReport"
         const val TASK_GROUP = "reporting"
         const val TASK_DESCRIPTION = "Generates an Html report about the project's configurations and their relationships."
     }
+
+    private val reports: DefaultConfigurationReportContainer
 
     private val generator: IConfigurationReportGenerator
     init {
@@ -37,6 +46,10 @@ open class ConfigurationReportTask : DefaultTask(), Reporting<DefaultConfigurati
             ReportFormat.GRAPH_VIZ -> GraphVizConfigurationReportGenerator(extension.outputDir)
             ReportFormat.TEXT -> TextConfigurationReportGenerator()
         }
+
+        val projectInternal: ProjectInternal = project as ProjectInternal
+        val instantiator: Instantiator = projectInternal.services.get(Instantiator::class.java)
+        reports = instantiator.newInstance(DefaultConfigurationReportContainer::class.java, this)
     }
 
     @InputFile
@@ -64,7 +77,16 @@ open class ConfigurationReportTask : DefaultTask(), Reporting<DefaultConfigurati
         }
     }
 
-    override fun getReports(): ConfigurationReports {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getReports(): ConfigurationReportContainer {
+        return reports
+    }
+
+    override fun reports(closure: Closure<*>?): ConfigurationReportContainer {
+        return reports.configure(closure!!) as ConfigurationReportContainer
+    }
+
+    override fun reports(configureAction: Action<in ConfigurationReportContainer>?): ConfigurationReportContainer {
+        configureAction?.execute(reports)
+        return reports
     }
 }

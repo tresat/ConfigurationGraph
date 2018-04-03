@@ -15,6 +15,7 @@ class ConfigurationReportPlugin : ReportingBasePlugin() {
 
     override fun apply(project: ProjectInternal) {
         project.plugins.apply(ProjectReportsPlugin::class.java)
+        project.plugins.apply(ReportingBasePlugin::class.java)
 
         extension = createExtension(project)
         extractTask = createExtractTask(project)
