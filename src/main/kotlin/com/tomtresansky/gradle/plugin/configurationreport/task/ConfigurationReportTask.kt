@@ -30,14 +30,14 @@ import javax.inject.Inject
  *
  * Constructor uses injected instantiator, retrieved via [ProjectInternal.getServices] to obtain an instance for [reports].
  */
-open class ConfigurationReportTask : DefaultTask(), Reporting<ConfigurationReportContainer> {
+open class ConfigurationReportTask @Inject constructor(instantiator: Instantiator) : DefaultTask(), Reporting<ConfigurationReportContainer> {
     companion object {
         const val TASK_NAME = "configurationReport"
         const val TASK_GROUP = "reporting"
         const val TASK_DESCRIPTION = "Generates an Html report about the project's configurations and their relationships."
     }
 
-    private val reports: DefaultConfigurationReportContainer
+    private val reports: DefaultConfigurationReportContainer = instantiator.newInstance(DefaultConfigurationReportContainer::class.java, this)
 
     private val generator: IConfigurationReportGenerator
     init {
@@ -46,10 +46,6 @@ open class ConfigurationReportTask : DefaultTask(), Reporting<ConfigurationRepor
             ReportFormat.GRAPH_VIZ -> GraphVizConfigurationReportGenerator(extension.outputDir)
             ReportFormat.TEXT -> TextConfigurationReportGenerator()
         }
-
-        val projectInternal: ProjectInternal = project as ProjectInternal
-        val instantiator: Instantiator = projectInternal.services.get(Instantiator::class.java)
-        reports = instantiator.newInstance(DefaultConfigurationReportContainer::class.java, this)
     }
 
     @InputFile

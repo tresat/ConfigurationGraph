@@ -20,10 +20,11 @@ import java.util.*
 open class DefaultConfigurationReportContainer(task: Task) : TaskReportContainer<TaskGeneratedSingleFileReport>(TaskGeneratedSingleFileReport::class.java, task), ConfigurationReportContainer {
     init {
         Objects.requireNonNull(task, "task must NOT be null!")
-        add(TaskGeneratedSingleFileReport::class.java, ConfigurationReportTask.TASK_NAME, task)
+        add(TaskGeneratedSingleFileReport::class.java, "html", task)
     }
 
     override fun getHtml(): SingleFileReport {
-        return getByName("configuration_report.html")
+        throw RuntimeException()
+        return getByName("html")
     }
 }

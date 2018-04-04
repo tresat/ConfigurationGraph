@@ -2,6 +2,7 @@ package com.tomtresansky.gradle.plugin.configurationreport
 
 import com.tomtresansky.gradle.plugin.configurationreport.task.ConfigurationReportTask
 import com.tomtresansky.gradle.plugin.configurationreport.task.ExtractConfigurationGraphTask
+import org.gradle.api.Task
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.plugins.ProjectReportsPlugin
 import org.gradle.api.plugins.ReportingBasePlugin
@@ -48,7 +49,15 @@ class ConfigurationReportPlugin : ReportingBasePlugin() {
             dependsOn(extractTask)
 
             graphFile = extractTask.graphFile
+
+            reports.all { report ->
+                report.setEnabled(true)
+                report.destination = reportFile
+            }
         }
+
+        val buildTask: Task = project.tasks.findByName("build")!!
+        buildTask.dependsOn(reportTask)
 
         return reportTask
     }
