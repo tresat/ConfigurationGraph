@@ -2,45 +2,36 @@ package com.tomtresansky.gradle.plugin.configurationreport.html
 
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.jetbrains.spek.api.dsl.*
 import java.io.File
 import java.io.FileNotFoundException
 
+const val SAMPLE_GRAPH_FILENAME = "sample_graph.png"
+
 object HtmlBuilderTest : Spek({
-    val SAMPLE_GRAPH_FILENAME = "sample_graph.png"
-    lateinit var sampleGraphFile: File
-
-    describe("an HTML formatter using a sample graph file") {
-        beforeGroup {
-            val pathToSampleGraphFile = HTMLReportFormatter::class.java.getResource(SAMPLE_GRAPH_FILENAME)?.file ?: throw FileNotFoundException("${SAMPLE_GRAPH_FILENAME} could not be found in the same package as ${HTMLReportFormatter::class.qualifiedName}")
-            sampleGraphFile = File(pathToSampleGraphFile)
-        }
-
+    given("an HTML formatter using a sample graph file") {
+        val sampleGraphFile = File(HTMLReportFormatter::class.java.getResource(SAMPLE_GRAPH_FILENAME)?.file ?: throw FileNotFoundException("$SAMPLE_GRAPH_FILENAME could not be found in the same package as ${HTMLReportFormatter::class.qualifiedName}"))
         val formatter = HTMLReportFormatter(sampleGraphFile)
 
         on("format") {
             val result = formatter.format()
 
             it ("should produce correctly formatted html output") {
-                /*val expected = """
+                val expected = """
                     |<html>
                     |  <head>
-                    |    <title>
-                    |      Test Page
-                    |    </title>
+                    |    <title>Project Configurations</title>
                     |  </head>
                     |  <body>
-                    |    <h1>
-                    |      Hello, World!
-                    |    </h1>
+                    |    <h1>XML encoding with Kotlin</h1>
+                    |    <p>this format can be used as an alternative markup to XML</p>
+                    |    <p>Image link: C:\Projects\ConfigurationReport\build\resources\test\com\tomtresansky\gradle\plugin\configurationreport\html\sample_graph.png</p>
                     |  </body>
                     |</html>
                     |""".trimMargin()
 
                 assertThat(result).isNotNull()
-                                  .isEqualTo(expected)*/
+                                  .isEqualTo(expected)
             }
         }
     }

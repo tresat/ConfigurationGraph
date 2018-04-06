@@ -46,7 +46,7 @@ defaultTasks 'build'
 sourceSets {
     test {
         resources {
-            srcDir 'src/test/images'
+            srcDirs = ['src/test/resources/images', 'src/test/resources/mockito']
         }
     }
 }
@@ -61,40 +61,40 @@ repositories {
 
 configurations {
     junitXmlToHtml {
-        description = "Needed for consolidating all Junit 5 engines' test output into single HTML report."
+        description = "Needed for consolidating all JUnit 5 engines' test output into single HTML report."
     }
 }
 
 dependencies {
     junitXmlToHtml "org.apache.ant:ant-junit:${versions.antJunit}"
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
-    compile "guru.nidi:graphviz-java:${versions.graphViz}"
-    compile "com.google.guava:guava:${versions.guava}"
-    compile "org.jetbrains.kotlinx:kotlinx-html-jvm:${versions.kotlinxHtml}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
+    implementation "guru.nidi:graphviz-java:${versions.graphViz}"
+    implementation "com.google.guava:guava:${versions.guava}"
+    implementation "org.jetbrains.kotlinx:kotlinx-html-jvm:${versions.kotlinxHtml}"
 
-    testCompile("org.jetbrains.spek:spek-api:${versions.spek}") {
+    testImplementation("org.jetbrains.spek:spek-api:${versions.spek}") {
         exclude group: 'org.jetbrains.kotlin' // We are probably using a newer version of Kotlin
     }
-    testCompile "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
-    testCompile "org.assertj:assertj-core:${versions.assertj}"
-    testCompile "org.mockito:mockito-core:${versions.mockito}"
+    testImplementation "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
+    testImplementation "org.assertj:assertj-core:${versions.assertj}"
+    testImplementation "org.mockito:mockito-core:${versions.mockito}"
 
-    testRuntime("org.jetbrains.spek:spek-junit-platform-engine:${versions.spek}") {
+    testRuntimeOnly("org.jetbrains.spek:spek-junit-platform-engine:${versions.spek}") {
         exclude group: 'org.jetbrains.kotlin' // We are probably using a newer version of Kotlin
     }
 
     // JUnit Jupiter API and TestEngine implementation
-    testCompile("org.junit.jupiter:junit-jupiter-api:${versions.junitJupiterVersion}")
-    testRuntime("org.junit.jupiter:junit-jupiter-engine:${versions.junitJupiterVersion}")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${versions.junitJupiterVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${versions.junitJupiterVersion}")
 
     // If you also want to support JUnit 3 and JUnit 4 tests
-    testCompile("junit:junit:${versions.junit4Version}")
-    testRuntime("org.junit.vintage:junit-vintage-engine:${versions.junitVintageVersion}")
+    testImplementation("junit:junit:${versions.junit4Version}")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:${versions.junitVintageVersion}")
 
     // To use Log4J's LogManager
-    testRuntime("org.apache.logging.log4j:log4j-core:${versions.log4jVersion}")
-    testRuntime("org.apache.logging.log4j:log4j-jul:${versions.log4jVersion}")
+    testRuntimeOnly("org.apache.logging.log4j:log4j-core:${versions.log4jVersion}")
+    testRuntimeOnly("org.apache.logging.log4j:log4j-jul:${versions.log4jVersion}")
 }
 
 junitPlatform {
@@ -191,6 +191,8 @@ afterEvaluate {
         outputFileImage = file("$depReportDir/dependency-graph.png")
     }
 
+    check.dependsOn(generateDependencyGraph)
+
     // Consolidated Unit Test HTML reports depend on JUnit, run with check
     def junitPlatformTestTask = tasks.getByName('junitPlatformTest')
     generateHtmlTestReports.dependsOn(junitPlatformTestTask)
@@ -201,6 +203,9 @@ afterEvaluate {
 
     // And add the project report in there too
     check.dependsOn projectReport
+
+    // Build dashboard does a check
+    buildDashboard.dependsOn(check)
 }
 
 // Per: https://docs.gradle.org/current/userguide/javaGradle_plugin.html

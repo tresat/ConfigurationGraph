@@ -35,7 +35,7 @@ open class ConfigurationReportTask @Inject constructor(instantiator: Instantiato
         const val TASK_DESCRIPTION = "Generates an Html report about the project's configurations and their relationships."
     }
 
-    @Nested
+    @Internal
     private val reports: DefaultConfigurationReportContainer = instantiator.newInstance(DefaultConfigurationReportContainer::class.java, this)
 
     @Input
