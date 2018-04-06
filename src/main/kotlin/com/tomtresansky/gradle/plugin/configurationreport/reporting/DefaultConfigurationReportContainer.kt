@@ -5,6 +5,7 @@ import org.gradle.api.reporting.internal.TaskGeneratedSingleFileReport
 import org.gradle.api.reporting.internal.TaskReportContainer
 import org.gradle.api.Task
 import org.gradle.api.reporting.SingleFileReport
+import org.gradle.api.tasks.Internal
 import java.util.*
 
 /**
@@ -23,8 +24,8 @@ open class DefaultConfigurationReportContainer(task: Task) : TaskReportContainer
         add(TaskGeneratedSingleFileReport::class.java, "html", task)
     }
 
+    @Internal
     override fun getHtml(): SingleFileReport {
-        throw RuntimeException()
         return getByName("html")
     }
 }
