@@ -24,7 +24,6 @@ open class DefaultConfigurationReportContainer(task: Task) : TaskReportContainer
     }
 
     override fun getHtml(): SingleFileReport {
-        throw RuntimeException()
         return getByName("html")
     }
 }

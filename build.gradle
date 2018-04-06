@@ -1,6 +1,11 @@
 buildscript {
     ext.versions = [
-        kotlin: '1.2.30',
+        kotlin: '1.2.31',
+        kotlinxHtml: '0.6.9',
+        graphViz: '0.2.3',
+        guava: '24.1-jre',
+        assertj: '3.6.2',
+        antJunit: '1.9.7',
         mockito: '2.15.0',
         spek: '1.1.5',
         junit4Version: '4.12',
@@ -16,7 +21,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.2.30' // Should match ext.versions.kotlin
+    id 'org.jetbrains.kotlin.jvm' version '1.2.31' // Should match ext.versions.kotlin
     
     // Simplifies adding plugin under test to a classpath
     // Automatically adds gradleApi(), gradleTestKit() deps automatically
@@ -38,6 +43,14 @@ version = '0.0.1'
 
 defaultTasks 'build'
 
+sourceSets {
+    test {
+        resources {
+            srcDir 'src/test/images'
+        }
+    }
+}
+
 repositories {
     jcenter()
 
@@ -53,17 +66,18 @@ configurations {
 }
 
 dependencies {
-    junitXmlToHtml 'org.apache.ant:ant-junit:1.9.7'
+    junitXmlToHtml "org.apache.ant:ant-junit:${versions.antJunit}"
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
-    compile 'guru.nidi:graphviz-java:0.2.3'
-    compile 'com.google.guava:guava:24.0-jre'
+    compile "guru.nidi:graphviz-java:${versions.graphViz}"
+    compile "com.google.guava:guava:${versions.guava}"
+    compile "org.jetbrains.kotlinx:kotlinx-html-jvm:${versions.kotlinxHtml}"
 
     testCompile("org.jetbrains.spek:spek-api:${versions.spek}") {
         exclude group: 'org.jetbrains.kotlin' // We are probably using a newer version of Kotlin
     }
     testCompile "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
-    testCompile 'org.assertj:assertj-core:3.6.2'
+    testCompile "org.assertj:assertj-core:${versions.assertj}"
     testCompile "org.mockito:mockito-core:${versions.mockito}"
 
     testRuntime("org.jetbrains.spek:spek-junit-platform-engine:${versions.spek}") {
