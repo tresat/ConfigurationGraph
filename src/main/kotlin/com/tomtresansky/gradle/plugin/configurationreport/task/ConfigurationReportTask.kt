@@ -14,9 +14,7 @@ import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.reporting.Reporting
-import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.OutputFile
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.*
 import org.gradle.internal.reflect.Instantiator
 import java.io.File
 import java.io.FileInputStream
@@ -37,8 +35,10 @@ open class ConfigurationReportTask @Inject constructor(instantiator: Instantiato
         const val TASK_DESCRIPTION = "Generates an Html report about the project's configurations and their relationships."
     }
 
+    @Nested
     private val reports: DefaultConfigurationReportContainer = instantiator.newInstance(DefaultConfigurationReportContainer::class.java, this)
 
+    @Input
     private val generator: IConfigurationReportGenerator
     init {
         val extension: ConfigurationReportPluginExtension = project.extensions.findByName(ConfigurationReportPluginExtension.NAME) as ConfigurationReportPluginExtension
