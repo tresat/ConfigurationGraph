@@ -191,7 +191,8 @@ afterEvaluate {
         outputFileImage = file("$depReportDir/dependency-graph.png")
     }
 
-    check.dependsOn(generateDependencyGraph)
+    // TODO: This task requires a local install of graphviz...how to get this on Travis?
+    // check.dependsOn(generateDependencyGraph)
 
     // Consolidated Unit Test HTML reports depend on JUnit, run with check
     def junitPlatformTestTask = tasks.getByName('junitPlatformTest')
