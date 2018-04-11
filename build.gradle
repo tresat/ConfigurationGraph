@@ -44,9 +44,17 @@ version = '0.0.1'
 defaultTasks 'build'
 
 sourceSets {
+    main {
+        resources {
+            srcDirs = ['build/generated-main']
+        }
+    }
+
     test {
         resources {
-            srcDirs = ['src/test/resources/images', 'src/test/resources/mockito']
+            srcDirs = ['src/test/resources/images',
+                       'src/test/resources/mockito',
+                       'src/test/resources/version']
         }
     }
 }
@@ -178,6 +186,36 @@ task wrapper(type: Wrapper) {
     // Get gradle-all distribution that contains not only the binaries but also the sources for development
     distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }
+
+task generateVersionProperties(type: Exec) {
+    group = 'Build'
+    description = 'Create build/version.properties file containing info about the current build'
+
+    workingDir = project.rootDir
+    commandLine 'git', 'rev-parse', '--verify', 'HEAD'
+
+    //store the output instead of printing to the console:
+    standardOutput = new ByteArrayOutputStream()
+
+    File versionFile = file('build/generated-main/com/tomtresansky/gradle/plugin/configurationreport/version.properties')
+    outputs.file(versionFile)
+    outputs.upToDateWhen { false }
+
+    doLast {
+        if (versionFile.exists()) {
+            versionFile.delete()
+        }
+        versionFile.createNewFile()
+
+        def gitCommit = standardOutput.toString()
+        versionFile.withWriter { out ->
+            out.writeLine("project.version=${project.version}")
+            out.writeLine("build.time=${new Date()}")
+            out.writeLine("git.commit=$gitCommit")
+        }
+    }
+}
+processResources.dependsOn generateVersionProperties
 
 afterEvaluate {
     /*

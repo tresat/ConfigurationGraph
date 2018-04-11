@@ -4,8 +4,10 @@ import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
 import java.io.File
 import java.io.StringWriter
+import java.nio.file.Path
+import java.nio.file.Paths
 
-class HTMLReportFormatter(val pngFile: File) {
+class HTMLReportFormatter(private val pngFile: File, private val reportDir: Path) {
     fun format(): String {
         val writer: StringWriter = StringWriter().let { writer ->
             writer.appendHTML().html {
@@ -15,11 +17,15 @@ class HTMLReportFormatter(val pngFile: File) {
                 body {
                     h1 { +"XML encoding with Kotlin" }
                     p { +"this format can be used as an alternative markup to XML" }
-                    p { +"Image link: ${pngFile.path}" }
+                    p { +"Image link: ${buildRelativePathToPng()}" }
                 }
             }
         }
 
         return writer.toString()
+    }
+
+    private fun buildRelativePathToPng(): Path {
+        return Paths.get(reportDir.relativize(pngFile.toPath()).toString(), pngFile.name)
     }
 }

@@ -8,10 +8,10 @@ import java.io.FileNotFoundException
 
 const val SAMPLE_GRAPH_FILENAME = "sample_graph.png"
 
-object HtmlBuilderTest : Spek({
+object HTMLReportFormatterTest : Spek({
     given("an HTML formatter using a sample graph file") {
         val sampleGraphFile = File(HTMLReportFormatter::class.java.getResource(SAMPLE_GRAPH_FILENAME)?.file ?: throw FileNotFoundException("$SAMPLE_GRAPH_FILENAME could not be found in the same package as ${HTMLReportFormatter::class.qualifiedName}"))
-        val formatter = HTMLReportFormatter(sampleGraphFile)
+        val formatter = HTMLReportFormatter(sampleGraphFile, sampleGraphFile.toPath())
 
         on("format") {
             val result = formatter.format()
@@ -25,7 +25,7 @@ object HtmlBuilderTest : Spek({
                     |  <body>
                     |    <h1>XML encoding with Kotlin</h1>
                     |    <p>this format can be used as an alternative markup to XML</p>
-                    |    <p>Image link: C:\Projects\ConfigurationReport\build\resources\test\com\tomtresansky\gradle\plugin\configurationreport\html\sample_graph.png</p>
+                    |    <p>Image link: sample_graph.png</p>
                     |  </body>
                     |</html>
                     |""".trimMargin()
