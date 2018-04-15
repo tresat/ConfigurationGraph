@@ -3,6 +3,7 @@ buildscript {
         kotlin: '1.2.31',
         kotlinxHtml: '0.6.9',
         graphViz: '0.2.3',
+        grgit: '2.1.1',
         guava: '24.1-jre',
         assertj: '3.6.2',
         antJunit: '1.9.7',
@@ -15,8 +16,13 @@ buildscript {
         log4jVersion: '2.9.0'
     ]
 
+    repositories {
+        jcenter()
+    }
+
     dependencies {
-        classpath "org.junit.platform:junit-platform-gradle-plugin:${versions.junitPlatformVersion}"
+        classpath "org.ajoberstar:grgit:$versions.grgit"
+        classpath "org.junit.platform:junit-platform-gradle-plugin:$versions.junitPlatformVersion"
     }
 }
 
@@ -38,18 +44,26 @@ apply plugin: 'project-report'
 apply plugin: 'org.junit.platform.gradle.plugin'
 apply plugin: 'build-dashboard'
 
+ext {
+    baseVersion = '0.0.1'
+    timestamp = new Date()
+
+    // Open the Git repository in the current directory
+    // Via: http://mrhaki.blogspot.com/2015/04/gradle-goodness-use-git-commit-id-in.html
+    git = org.ajoberstar.grgit.Grgit.open(dir: '.')
+
+    // Get commit id of HEAD.
+    revision = git.head().id
+    // Alternative is using abbreviatedId of head() method.
+    // revision = git.head().abbreviatedId
+}
+
 group = 'com.tomtresansky.gradle.plugin'
-version = '0.0.1'
+version = "$baseVersion-$revision-${timestamp.getTime()}"
 
 defaultTasks 'build'
 
 sourceSets {
-    main {
-        resources {
-            srcDirs = ['build/generated-main']
-        }
-    }
-
     test {
         resources {
             srcDirs = ['src/test/resources/images',
@@ -74,35 +88,35 @@ configurations {
 }
 
 dependencies {
-    junitXmlToHtml "org.apache.ant:ant-junit:${versions.antJunit}"
+    junitXmlToHtml "org.apache.ant:ant-junit:$versions.antJunit"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
-    implementation "guru.nidi:graphviz-java:${versions.graphViz}"
-    implementation "com.google.guava:guava:${versions.guava}"
-    implementation "org.jetbrains.kotlinx:kotlinx-html-jvm:${versions.kotlinxHtml}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
+    implementation "guru.nidi:graphviz-java:$versions.graphViz"
+    implementation "com.google.guava:guava:$versions.guava"
+    implementation "org.jetbrains.kotlinx:kotlinx-html-jvm:$versions.kotlinxHtml"
 
-    testImplementation("org.jetbrains.spek:spek-api:${versions.spek}") {
+    testImplementation("org.jetbrains.spek:spek-api:$versions.spek") {
         exclude group: 'org.jetbrains.kotlin' // We are probably using a newer version of Kotlin
     }
-    testImplementation "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
-    testImplementation "org.assertj:assertj-core:${versions.assertj}"
-    testImplementation "org.mockito:mockito-core:${versions.mockito}"
+    testImplementation "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
+    testImplementation "org.assertj:assertj-core:$versions.assertj"
+    testImplementation "org.mockito:mockito-core:$versions.mockito"
 
-    testRuntimeOnly("org.jetbrains.spek:spek-junit-platform-engine:${versions.spek}") {
+    testRuntimeOnly("org.jetbrains.spek:spek-junit-platform-engine:$versions.spek") {
         exclude group: 'org.jetbrains.kotlin' // We are probably using a newer version of Kotlin
     }
 
     // JUnit Jupiter API and TestEngine implementation
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${versions.junitJupiterVersion}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${versions.junitJupiterVersion}")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$versions.junitJupiterVersion")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$versions.junitJupiterVersion")
 
     // If you also want to support JUnit 3 and JUnit 4 tests
-    testImplementation("junit:junit:${versions.junit4Version}")
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:${versions.junitVintageVersion}")
+    testImplementation("junit:junit:$versions.junit4Version")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:$versions.junitVintageVersion")
 
     // To use Log4J's LogManager
-    testRuntimeOnly("org.apache.logging.log4j:log4j-core:${versions.log4jVersion}")
-    testRuntimeOnly("org.apache.logging.log4j:log4j-jul:${versions.log4jVersion}")
+    testRuntimeOnly("org.apache.logging.log4j:log4j-core:$versions.log4jVersion")
+    testRuntimeOnly("org.apache.logging.log4j:log4j-jul:$versions.log4jVersion")
 }
 
 junitPlatform {
@@ -125,7 +139,7 @@ task generateHtmlTestReports {
 
     ext {
         resultsDir = file("$buildDir/test-results/junit-platform")
-        targetDir = file("${project.reportsDir}/junit")
+        targetDir = file("$project.reportsDir/junit")
     }
 
     doLast {
@@ -158,10 +172,14 @@ jacocoTestReport {
     reports {
         xml.enabled true // needed for codecov.io, which expects a /build/reports/jacoco/test/jacocoTestReport.xml
         csv.enabled false
-        html.destination file("${project.reportsDir}/jacoco")
+        html.destination file("$project.reportsDir/jacoco")
     }
 
     executionData = files("$buildDir/jacoco/junitPlatformTest.exec")
+}
+
+jar {
+    version = baseVersion
 }
 
 uploadArchives {
@@ -187,19 +205,27 @@ task wrapper(type: Wrapper) {
     distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }
 
-task generateVersionProperties(type: Exec) {
+task generateVersionProperties() {
     group = 'Build'
-    description = 'Create build/version.properties file containing info about the current build'
+    description = 'Create version.properties file containing info about the current build'
 
-    workingDir = project.rootDir
-    commandLine 'git', 'rev-parse', '--verify', 'HEAD'
+    inputs.property('baseVersion') {
+        baseVersion
+    }
+    inputs.property('timestamp') {
+        timestamp
+    }
+    inputs.property('revision') {
+        revision
+    }
 
-    //store the output instead of printing to the console:
-    standardOutput = new ByteArrayOutputStream()
+    ext.outputDir = "$buildDir/generated-main"
+    ext.versionFile = file("$outputDir/com/tomtresansky/gradle/plugin/configurationreport/version.properties")
+    outputs.dir(outputDir)
 
-    File versionFile = file('build/generated-main/com/tomtresansky/gradle/plugin/configurationreport/version.properties')
-    outputs.file(versionFile)
-    outputs.upToDateWhen { false }
+    sourceSets.main.output.dir(builtBy: generateVersionProperties) {
+        outputDir
+    }
 
     doLast {
         if (versionFile.exists()) {
@@ -207,12 +233,11 @@ task generateVersionProperties(type: Exec) {
         }
         versionFile.createNewFile()
 
-        def gitCommit = standardOutput.toString()
-        versionFile.withWriter { out ->
-            out.writeLine("project.version=${project.version}")
-            out.writeLine("build.time=${new Date()}")
-            out.writeLine("git.commit=$gitCommit")
-        }
+        versionFile.text = """# $project.name
+                |project.version=$baseVersion
+                |build.time=$timestamp
+                |git.commit=$revision
+                |""".stripMargin()
     }
 }
 processResources.dependsOn generateVersionProperties
