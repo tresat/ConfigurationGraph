@@ -36,6 +36,7 @@ plugins {
 
     id 'org.sonarqube' version '2.6'
     id 'com.vanniktech.dependency.graph.generator' version '0.3.0'
+    id 'com.github.ben-manes.versions' version '0.17.0'
 }
 
 apply plugin: 'maven' // For local publishing
@@ -48,9 +49,9 @@ ext {
     baseVersion = '0.0.1'
     timestamp = new Date()
 
-    // Open the Git repository in the current directory
+    // Open the Git repository in this project's root directory
     // Via: http://mrhaki.blogspot.com/2015/04/gradle-goodness-use-git-commit-id-in.html
-    git = org.ajoberstar.grgit.Grgit.open(dir: '.')
+    git = org.ajoberstar.grgit.Grgit.open(dir: project.rootDir)
 
     // Get commit id of HEAD.
     revision = git.head().id
@@ -242,6 +243,66 @@ task generateVersionProperties() {
 }
 processResources.dependsOn generateVersionProperties
 
+dependencyUpdates {
+    group = 'reporting'
+    revision = 'release'
+    outputFormatter = 'plain,xml'
+    outputDir = "$reportsDir/dependencyUpdates"
+
+    // Ignore non-release versions per https://github.com/ben-manes/gradle-versions-plugin#revisions
+    resolutionStrategy = {
+        componentSelection { rules ->
+            rules.all { ComponentSelection selection ->
+                boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
+                    selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
+                }
+                if (rejected) {
+                    selection.reject('Release candidate')
+                }
+            }
+        }
+    }
+
+    // Provide HTML output per https://github.com/ben-manes/gradle-versions-plugin#custom-report-format
+    ext.htmlOutputFile = file("$outputDir/report.html")
+    outputs.file htmlOutputFile
+
+    outputFormatter = { result ->
+        def updatable = result.outdated.dependencies
+        if (!updatable.isEmpty()){
+            def writer = new StringWriter()
+            def html = new groovy.xml.MarkupBuilder(writer)
+
+            html.html {
+                body {
+                    table {
+                        thead {
+                            tr {
+                                td("Group")
+                                td("Module")
+                                td("Current version")
+                                td("Latest version")
+                            }
+                        }
+                        tbody {
+                            updatable.each { dependency->
+                                tr {
+                                    td(dependency.group)
+                                    td(dependency.name)
+                                    td(dependency.version)
+                                    td(dependency.available.release ?: dependency.available.milestone)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            htmlOutputFile.text = writer.toString()
+        }
+    }
+}
+
 afterEvaluate {
     /*
      * By default, version 0.3.0 of the dependency graph generator plugin outputs to project root.  Put it in a
@@ -255,6 +316,7 @@ afterEvaluate {
     }
 
     check.dependsOn(generateDependencyGraph)
+    check.dependsOn(dependencyUpdates)
 
     // Consolidated Unit Test HTML reports depend on JUnit, run with check
     def junitPlatformTestTask = tasks.getByName('junitPlatformTest')
