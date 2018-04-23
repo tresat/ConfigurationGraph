@@ -219,9 +219,9 @@ task generateVersionProperties() {
         revision
     }
 
-    ext.outputDir = "$buildDir/generated-main"
-    ext.versionFile = file("$outputDir/com/tomtresansky/gradle/plugin/configurationreport/version.properties")
+    ext.outputDir = "$buildDir/generated-main/com/tomtresansky/gradle/plugin/configurationreport"
     outputs.dir(outputDir)
+    ext.versionFile = file("$outputDir/version.properties")
 
     sourceSets.main.output.dir(builtBy: generateVersionProperties) {
         outputDir
