@@ -1,19 +1,44 @@
 buildscript {
     ext.versions = [
-        kotlin: '1.2.31',
+        kotlin: '1.2.40',
         kotlinxHtml: '0.6.9',
-        graphViz: '0.2.3',
-        grgit: '2.1.1',
+        graphViz: '0.4.0',
+        grgit: '2.2.0',
         guava: '24.1-jre',
-        assertj: '3.6.2',
-        antJunit: '1.9.7',
-        mockito: '2.15.0',
+        assertj: '3.9.1',
+        antJunit: '1.10.3',
+        mockito: '2.18.3',
+
+/* Stay at 1.1.5 of Spek, updating to 1.1.19 yields:
+WARNING: TestEngine with ID 'spek' failed to discover tests
+java.lang.NoClassDefFoundError: org/junit/platform/engine/discovery/ClasspathSelector
+        at org.jetbrains.spek.engine.SpekTestEngine.resolveSpecs(SpekTestEngine.kt:49)
+        at org.jetbrains.spek.engine.SpekTestEngine.discover(SpekTestEngine.kt:36)
+        at org.junit.platform.launcher.core.DefaultLauncher.discoverEngineRoot(DefaultLauncher.java:130)
+        at org.junit.platform.launcher.core.DefaultLauncher.discoverRoot(DefaultLauncher.java:117)
+        at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:90)
+        at org.junit.platform.console.tasks.ConsoleTestExecutor.executeTests(ConsoleTestExecutor.java:65)
+        at org.junit.platform.console.tasks.ConsoleTestExecutor.lambda$execute$0(ConsoleTestExecutor.java:57)
+        at org.junit.platform.console.tasks.CustomContextClassLoaderExecutor.invoke(CustomContextClassLoaderExecutor.java:33)
+        at org.junit.platform.console.tasks.ConsoleTestExecutor.execute(ConsoleTestExecutor.java:57)
+        at org.junit.platform.console.ConsoleLauncher.executeTests(ConsoleLauncher.java:84)
+        at org.junit.platform.console.ConsoleLauncher.execute(ConsoleLauncher.java:74)
+        at org.junit.platform.console.ConsoleLauncher.execute(ConsoleLauncher.java:47)
+        at org.junit.platform.console.ConsoleLauncher.main(ConsoleLauncher.java:39)
+Caused by: java.lang.ClassNotFoundException: org.junit.platform.engine.discovery.ClasspathSelector
+        at java.net.URLClassLoader.findClass(URLClassLoader.java:381)
+        at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+        at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:331)
+        at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+        ... 13 more
+*/
         spek: '1.1.5',
+
         junit4Version: '4.12',
-        junitVintageVersion: '5.1.0',
-        junitPlatformVersion: '1.1.0',
-        junitJupiterVersion: '5.1.0',
-        log4jVersion: '2.9.0'
+        junitVintageVersion: '5.1.1',
+        junitPlatformVersion: '1.1.1',
+        junitJupiterVersion: '5.1.1',
+        log4jVersion: '2.11.0'
     ]
 
     repositories {
@@ -27,15 +52,15 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.2.31' // Should match ext.versions.kotlin
+    id 'org.jetbrains.kotlin.jvm' version '1.2.40' // Should match ext.versions.kotlin
     
     // Simplifies adding plugin under test to a classpath
     // Automatically adds gradleApi(), gradleTestKit() deps automatically
     // https://docs.gradle.org/current/userguide/javaGradle_plugin.html
     id 'java-gradle-plugin'
 
-    id 'org.sonarqube' version '2.6'
-    id 'com.vanniktech.dependency.graph.generator' version '0.3.0'
+    id 'org.sonarqube' version '2.6.2'
+    id 'com.vanniktech.dependency.graph.generator' version '0.4.0'
     id 'com.github.ben-manes.versions' version '0.17.0'
 }
 
