@@ -59,7 +59,6 @@ plugins {
     // https://docs.gradle.org/current/userguide/javaGradle_plugin.html
     id 'java-gradle-plugin'
 
-    id 'org.sonarqube' version '2.6.2'
     id 'com.vanniktech.dependency.graph.generator' version '0.4.0'
     id 'com.github.ben-manes.versions' version '0.17.0'
 }
@@ -188,7 +187,6 @@ task generateHtmlTestReports {
 jacoco {
     applyTo junitPlatformTest
 }
-
 
 jacocoTestReport {
     group = 'reporting'
@@ -340,8 +338,7 @@ afterEvaluate {
         outputFileImage = file("$depReportDir/dependency-graph.png")
     }
 
-    check.dependsOn(generateDependencyGraph)
-    check.dependsOn(dependencyUpdates)
+    check.dependsOn generateDependencyGraph
 
     // Consolidated Unit Test HTML reports depend on JUnit, run with check
     def junitPlatformTestTask = tasks.getByName('junitPlatformTest')
@@ -349,10 +346,11 @@ afterEvaluate {
     check.dependsOn(generateHtmlTestReports)
 
     // Needed for codecov, jacocoTestReport runs with check
-    check.dependsOn jacocoTestReport
+    check.dependsOn(jacocoTestReport)
 
-    // And add the project report in there too
-    check.dependsOn projectReport
+    // And add other verification-y tasks in there too
+    check.dependsOn(projectReport)
+    check.dependsOn(dependencyUpdates)
 
     // Build dashboard does a check
     buildDashboard.dependsOn(check)

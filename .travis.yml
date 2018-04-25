@@ -1,6 +1,13 @@
 language: java
 sudo: false # faster builds
 
+# Needed for sonarqube, see: https://about.sonarcloud.io/get-started/
+addons:
+  sonarcloud:
+    organization: "tresat-github"
+    token:
+      secure: "46c523ace050d6bea61422825de292b9d250c5f4"
+
 notifications:
   email:
     - tom.tresansky+travis.ci@gmail.com
@@ -8,14 +15,23 @@ notifications:
 jdk:
   - oraclejdk8
 
+# Graphviz needed for running dependencyReport
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y graphviz
+
 before_script:
   - chmod +x gradlew
 
 script:
-  - ./gradlew check
+  - ./gradlew build
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
+    - '$HOME/.gradle'
+    - '.gradle'
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
