@@ -22,7 +22,9 @@ class ConfigurationReportPlugin : ReportingBasePlugin() {
     }
 
     private fun createExtension(project: ProjectInternal): ConfigurationReportPluginExtension {
-        return project.extensions.create(ConfigurationReportPluginExtension.NAME, ConfigurationReportPluginExtension::class.java, project)
+        return project.extensions.create(ConfigurationReportPluginExtension.NAME,
+                                         ConfigurationReportPluginExtension::class.java,
+                                         project)
     }
 
     private fun createExtractTask(project: ProjectInternal): ExtractConfigurationGraphTask {
@@ -39,7 +41,8 @@ class ConfigurationReportPlugin : ReportingBasePlugin() {
     }
 
     private fun createReportTask(project: ProjectInternal): ConfigurationReportTask {
-        val reportTask: ConfigurationReportTask = project.tasks.create(ConfigurationReportTask.TASK_NAME, ConfigurationReportTask::class.java)
+        val reportTask: ConfigurationReportTask = project.tasks.create(ConfigurationReportTask.TASK_NAME,
+                                                                       ConfigurationReportTask::class.java)
         with (reportTask) {
             description = ConfigurationReportTask.TASK_DESCRIPTION
             group = ConfigurationReportTask.TASK_GROUP

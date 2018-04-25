@@ -14,7 +14,11 @@ import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.reporting.Reporting
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.reflect.Instantiator
 import java.io.File
 import java.io.FileInputStream

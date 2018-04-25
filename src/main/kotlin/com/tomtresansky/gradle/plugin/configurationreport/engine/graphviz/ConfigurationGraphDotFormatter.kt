@@ -1,8 +1,6 @@
 package com.tomtresansky.gradle.plugin.configurationreport.engine.graphviz
 
-import com.google.common.annotations.VisibleForTesting
 import com.tomtresansky.gradle.plugin.configurationreport.graph.ConfigurationGraph
-import java.io.File
 
 /**
  *
