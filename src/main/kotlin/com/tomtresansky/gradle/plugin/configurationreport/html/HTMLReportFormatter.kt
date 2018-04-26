@@ -13,7 +13,18 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 class HTMLReportFormatter(private val pngFile: File, private val reportDir: Path) {
+    companion object {
+        const val TEMPLATE_FILE_NAME = "report_template.html"
+    }
+
     fun format(): String {
+        val reportTemplateFile = File(HTMLReportFormatter::class.java.getResource(TEMPLATE_FILE_NAME).toURI())
+        val reportTemplate = reportTemplateFile.readText()
+
+        return reportTemplate
+    }
+
+    private fun buildMainContents(): String {
         val writer: StringWriter = StringWriter().let { writer ->
             writer.appendHTML().html {
                 head {

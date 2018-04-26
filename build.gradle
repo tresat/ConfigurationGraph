@@ -39,7 +39,8 @@ Caused by: java.lang.ClassNotFoundException: org.junit.platform.engine.discovery
         junitVintageVersion: '5.1.1',
         junitPlatformVersion: '1.1.1',
         junitJupiterVersion: '5.1.1',
-        log4jVersion: '2.11.0'
+        log4jVersion: '2.11.0',
+        thymeleaf: '3.0.9.RELEASE'
     ]
 
     repositories {
@@ -91,6 +92,13 @@ version = "$baseVersion-$revision-${timestamp.getTime()}"
 defaultTasks 'build'
 
 sourceSets {
+    main {
+        resources {
+            srcDirs = ['src/main/resources/html',
+                       'src/main/resources/plugin']
+        }
+    }
+
     test {
         resources {
             srcDirs = ['src/test/resources/images',
@@ -121,6 +129,7 @@ dependencies {
     implementation "guru.nidi:graphviz-java:$versions.graphViz"
     implementation "com.google.guava:guava:$versions.guava"
     implementation "org.jetbrains.kotlinx:kotlinx-html-jvm:$versions.kotlinxHtml"
+    implementation "org.thymeleaf:thymeleaf:$versions.thymeleaf"
 
     testImplementation("org.jetbrains.spek:spek-api:$versions.spek") {
         exclude group: 'org.jetbrains.kotlin' // We are probably using a newer version of Kotlin
@@ -368,8 +377,9 @@ afterEvaluate {
     check.dependsOn(dependencyUpdates)
     check.dependsOn(detektCheck)
 
-    // Build dashboard does a check
+    // Build dashboard does a check and re-runs whenever any check task reran
     buildDashboard.dependsOn(check)
+    buildDashboard.outputs.upToDateWhen { !check.didWork }
 }
 
 // Per: https://docs.gradle.org/current/userguide/javaGradle_plugin.html
