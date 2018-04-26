@@ -13,7 +13,6 @@ import org.junit.Assert.assertTrue
 import org.mockito.Mockito
 
 object GraphVizConfigurationReportGeneratorTest : Spek({
-
     given("a new GraphVizConfigurationReportGenerator") {
         val generator = GraphVizConfigurationReportGenerator(Files.createTempDir())
 
@@ -36,8 +35,3 @@ object GraphVizConfigurationReportGeneratorTest : Spek({
         }
     }
 })
-
-fun String.useSystemLineSeparator(): String {
-    val sep = System.getProperty("line.separator")
-    return this.replace("\n", sep)
-}

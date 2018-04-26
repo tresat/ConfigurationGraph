@@ -57,6 +57,6 @@ class GraphVizConfigurationReportGenerator(outputDir: File) : IConfigurationRepo
         val htmlReportFormatter = HTMLReportFormatter(pngFile, reportFile.parentFile.toPath())
 
         reportFile.createNewFile()
-        reportFile.bufferedWriter().write(htmlReportFormatter.format())
+        reportFile.writer().write(htmlReportFormatter.format())
     }
 }
