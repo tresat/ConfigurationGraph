@@ -22,7 +22,7 @@ object HTMLReportFormatterTest : Spek({
                                   "main" to testMain,
                                   "footer" to testFooter)
 
-            val result = formatter.format(variables).useSystemLineSeparator()
+            val result = formatter.format(variables)
 
             it ("should produce correctly formatted html output") {
                 // Note that the th namespace declaration is also removed
