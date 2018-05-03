@@ -1,6 +1,7 @@
 package com.tomtresansky.gradle.plugin.configurationreport.html
 
 import com.google.common.annotations.VisibleForTesting
+import com.tomtresansky.gradle.plugin.configurationreport.BuildInfo
 import kotlinx.html.body
 import kotlinx.html.h1
 import kotlinx.html.head
@@ -44,13 +45,15 @@ class HTMLReportFormatter(private val pngFile: File, private val reportDir: Path
     fun format(): String {
         val variables = mapOf("header" to "HEADER GOES HERE",
                               "main" to "MAIN GOES HERE",
-                              "footer" to "FOOTER GOES HERE")
+                              "today" to Calendar.getInstance(),
+                              "version" to BuildInfo.version,
+                              "homepage" to BuildInfo.homepage)
 
         return format(variables)
     }
 
     @VisibleForTesting
-    internal fun format(vars : Map<String, String>): String {
+    internal fun format(vars: Map<String, Any>): String {
         val context = Context(Locale.getDefault(), vars)
 
         val out = StringWriter()

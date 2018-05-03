@@ -10,24 +10,32 @@ import java.time.ZonedDateTime
 import java.util.*
 
 /**
- * Unit tests for the [Version] class.
+ * Unit tests for the [BuildInfo] class.
  *
  * @author Tom Tresansky
  */
-object VersionTest : Spek({
-    given("a Version object, initialized from a sample version.properties file") {
+object BuildInfoTest : Spek({
+    given("a BuildInfo object, initialized from a sample build.properties file") {
+        it("has the expected name") {
+            val expectedName = "ConfigurationReport"
+            assertThat(BuildInfo.projectName).isEqualTo(expectedName)
+        }
+        it("has the expected homepage") {
+            val expectedHomepage = "https://github.com/tresat/ConfigurationReport"
+            assertThat(BuildInfo.homepage).isEqualTo(expectedHomepage)
+        }
         it("has the expected version") {
             val expectedVersion = "0.0.1"
-            assertThat(Version.projectVersion).isEqualTo(expectedVersion)
+            assertThat(BuildInfo.version).isEqualTo(expectedVersion)
         }
         it("has the expected buildTime") {
             val expectedDate = Date.from(ZonedDateTime.of(LocalDateTime.of(2018, Month.APRIL, 11, 16, 55, 56), // This is in GMT, will be adjusted to EDT (-4 hours)
                                                           TimeZone.getTimeZone("EDT").toZoneId()).toInstant())
-            assertThat(Version.buildTime).isEqualTo(expectedDate)
+            assertThat(BuildInfo.buildTime).isEqualTo(expectedDate)
         }
         it("has the expected commit hash") {
             val expectedCommit = "753c75724b7ab48d7284354b13388d7dd8e079f2"
-            assertThat(Version.gitCommit).isEqualTo(expectedCommit)
+            assertThat(BuildInfo.gitCommit).isEqualTo(expectedCommit)
         }
     }
 })

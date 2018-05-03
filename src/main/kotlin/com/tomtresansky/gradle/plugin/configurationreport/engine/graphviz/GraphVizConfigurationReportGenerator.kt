@@ -55,8 +55,13 @@ class GraphVizConfigurationReportGenerator(outputDir: File) : IConfigurationRepo
     @VisibleForTesting
     internal fun writeReport(pngFile: File, reportFile: File) {
         val htmlReportFormatter = HTMLReportFormatter(pngFile, reportFile.parentFile.toPath())
+        val report = htmlReportFormatter.format()
 
-        reportFile.createNewFile()
-        reportFile.writer().write(htmlReportFormatter.format())
+        reportFile.let { f ->
+            if (!f.exists()) {
+                f.createNewFile()
+            }
+            f.writeText(report)
+        }
     }
 }
