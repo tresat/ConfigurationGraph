@@ -11,6 +11,7 @@ import kotlinx.html.stream.appendHTML
 import kotlinx.html.title
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
+import org.thymeleaf.templatemode.TemplateMode
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 import java.io.File
 import java.io.StringWriter
@@ -26,7 +27,6 @@ class HTMLReportFormatter(private val pngFile: File, private val reportDir: Path
         // Should match this class' package, with trailing /
         const val TEMPLATES_PREFIX = "com/tomtresansky/gradle/plugin/configurationreport/html/"
         const val TEMPLATES_SUFFIX = ".html"
-        const val TEMPLATE_MODE = "HTML"
         // Template file name does NOT include extension
         const val TEMPLATE_FILE_BASE_NAME = "report_template"
     }
@@ -37,7 +37,8 @@ class HTMLReportFormatter(private val pngFile: File, private val reportDir: Path
         val templateResolver = ClassLoaderTemplateResolver()
         templateResolver.prefix = TEMPLATES_PREFIX
         templateResolver.suffix = TEMPLATES_SUFFIX
-        templateResolver.setTemplateMode(TEMPLATE_MODE)
+        templateResolver.templateMode = TemplateMode.HTML
+        templateResolver.isCacheable = false
 
         templateEngine.setTemplateResolver(templateResolver)
     }
@@ -47,14 +48,15 @@ class HTMLReportFormatter(private val pngFile: File, private val reportDir: Path
                               "main" to "MAIN GOES HERE",
                               "today" to Calendar.getInstance(),
                               "version" to BuildInfo.version,
-                              "homepage" to BuildInfo.homepage)
+                              "homepage" to BuildInfo.homepage,
+                              "commit" to BuildInfo.gitCommit)
 
         return format(variables)
     }
 
     @VisibleForTesting
     internal fun format(vars: Map<String, Any>): String {
-        val context = Context(Locale.getDefault(), vars)
+        val context = Context().apply { setVariables(vars)}
 
         val out = StringWriter()
         templateEngine.process(TEMPLATE_FILE_BASE_NAME, context, out)

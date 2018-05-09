@@ -9,9 +9,9 @@ import java.util.regex.Pattern
  */
 fun String.normalizeNewLines(): String {
     val sep = System.getProperty("line.separator")
-    val EOL = Pattern.compile("\r?\n|(\\\\r)?\\\\n")
+    val eolRegex = Pattern.compile("\r?\n|(\\\\r)?\\\\n")
 
-    return EOL.matcher(this).replaceAll(sep)
+    return eolRegex.matcher(this).replaceAll(sep)
 }
 
 fun String.equalsIgnoringNewLines(other: String): Boolean {
