@@ -7,6 +7,7 @@ import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.mockito.Mockito.*
 
 object ConfigurationNodeTest: Spek({
@@ -21,10 +22,15 @@ object ConfigurationNodeTest: Spek({
 
             val result = builder.build()
 
-            it("should have properly built an empty node named Empty") {
+            it("should have properly built an empty, transitive node named Empty") {
                 assertEquals("Empty", result.configName)
+                assertTrue(result.transitive)
                 assertThat(result.children).isNotNull()
                                            .isEmpty()
+                assertThat(result.transitiveChildren).isNotNull()
+                                                     .isEmpty()
+                assertThat(result.intransitiveChildren).isNotNull()
+                                                       .isEmpty()
             }
         }
     }

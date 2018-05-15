@@ -1,6 +1,7 @@
 package com.tomtresansky.gradle.plugin.configurationreport.html
 
 import com.tomtresansky.gradle.plugin.configurationreport.graph.ConfigurationGraph
+import com.tomtresansky.gradle.plugin.configurationreport.util.assertEqualsLineByLine
 import com.tomtresansky.gradle.plugin.configurationreport.util.getResourceFile
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.spek.api.Spek
@@ -18,7 +19,6 @@ const val SAMPLE_IMAGE_FILENAME = "sample_graph.png"
 const val SAMPLE_GRAPH_FILENAME = "sample_serialized_graph_1.graph"
 const val SAMPLE_REPORT_OUTPUT_1 = "sample_report_output_1.html"
 
-@Suppress("unused")
 object HTMLReportFormatterTest : Spek({
     given("an HTML formatter using a sample graph file") {
         val sampleImageFile = getResourceFile(HTMLReportFormatter.javaClass, SAMPLE_IMAGE_FILENAME)
@@ -52,7 +52,7 @@ object HTMLReportFormatterTest : Spek({
                 val expected = sampleReportFile1.readText()
 
                 assertThat(result).isNotNull()
-                                  .isEqualTo(expected)
+                assertEqualsLineByLine(expected, result)
             }
         }
     }

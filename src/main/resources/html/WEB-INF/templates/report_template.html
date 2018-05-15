@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>Project Configurations Report</title>
@@ -15,13 +15,13 @@
             <table>
                 <tr>
                     <th>Configuration</th>
-                    <th>Extends</th>
-                    <th>Transitive</th>
+                    <th>Transitive Children</th>
+                    <th>Intransitive Children</th>
                 </tr>
                 <tr data-th-each="config : ${graph.getNodes()}">
                     <td data-th-text="${config.getConfigName()}">Runtime</td>
-                    <td data-th-text="${config.getConfigName()}">true</td>
-                    <td data-th-text="${config.getConfigName()}">Compile</td>
+                    <td data-th-text="${config.printTransitiveChildren()}">true</td>
+                    <td data-th-text="${config.printIntransitiveChildren()}">Compile</td>
                 </tr>
             </table>
         </div>

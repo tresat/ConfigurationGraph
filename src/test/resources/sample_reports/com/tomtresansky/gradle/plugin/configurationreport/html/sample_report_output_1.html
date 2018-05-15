@@ -15,108 +15,108 @@
             <table>
                 <tr>
                     <th>Configuration</th>
-                    <th>Extends</th>
-                    <th>Transitive</th>
+                    <th>Transitive Children</th>
+                    <th>Intransitive Children</th>
                 </tr>
                 <tr>
                     <td>annotationProcessor</td>
-                    <td>annotationProcessor</td>
-                    <td>annotationProcessor</td>
+                    <td></td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>apiElements</td>
-                    <td>apiElements</td>
-                    <td>apiElements</td>
+                    <td></td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>archives</td>
-                    <td>archives</td>
-                    <td>archives</td>
+                    <td></td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>compile</td>
-                    <td>compile</td>
-                    <td>compile</td>
+                    <td>implementation, runtime, testCompile</td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>compileClasspath</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>compileOnly</td>
                     <td>compileClasspath</td>
-                    <td>compileClasspath</td>
-                </tr>
-                <tr>
-                    <td>compileOnly</td>
-                    <td>compileOnly</td>
-                    <td>compileOnly</td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>default</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>implementation</td>
+                    <td>compileClasspath, runtimeClasspath, runtimeElements, testImplementation</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>runtime</td>
+                    <td>apiElements, runtimeClasspath, runtimeElements, testRuntime</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>runtimeClasspath</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>runtimeElements</td>
                     <td>default</td>
-                    <td>default</td>
-                </tr>
-                <tr>
-                    <td>implementation</td>
-                    <td>implementation</td>
-                    <td>implementation</td>
-                </tr>
-                <tr>
-                    <td>runtime</td>
-                    <td>runtime</td>
-                    <td>runtime</td>
-                </tr>
-                <tr>
-                    <td>runtimeClasspath</td>
-                    <td>runtimeClasspath</td>
-                    <td>runtimeClasspath</td>
-                </tr>
-                <tr>
-                    <td>runtimeElements</td>
-                    <td>runtimeElements</td>
-                    <td>runtimeElements</td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>runtimeOnly</td>
-                    <td>runtimeOnly</td>
-                    <td>runtimeOnly</td>
+                    <td>runtimeClasspath, runtimeElements, testRuntimeOnly</td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>testAnnotationProcessor</td>
-                    <td>testAnnotationProcessor</td>
-                    <td>testAnnotationProcessor</td>
+                    <td></td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>testCompile</td>
-                    <td>testCompile</td>
-                    <td>testCompile</td>
+                    <td>testImplementation, testRuntime</td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>testCompileClasspath</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>testCompileOnly</td>
                     <td>testCompileClasspath</td>
-                    <td>testCompileClasspath</td>
-                </tr>
-                <tr>
-                    <td>testCompileOnly</td>
-                    <td>testCompileOnly</td>
-                    <td>testCompileOnly</td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>testImplementation</td>
-                    <td>testImplementation</td>
-                    <td>testImplementation</td>
+                    <td>testCompileClasspath, testRuntimeClasspath</td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>testRuntime</td>
-                    <td>testRuntime</td>
-                    <td>testRuntime</td>
+                    <td>testRuntimeClasspath</td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>testRuntimeClasspath</td>
-                    <td>testRuntimeClasspath</td>
-                    <td>testRuntimeClasspath</td>
+                    <td></td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>testRuntimeOnly</td>
-                    <td>testRuntimeOnly</td>
-                    <td>testRuntimeOnly</td>
+                    <td>testRuntimeClasspath</td>
+                    <td></td>
                 </tr>
             </table>
         </div>

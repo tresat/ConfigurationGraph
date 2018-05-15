@@ -1,12 +1,12 @@
 package com.tomtresansky.gradle.plugin.configurationreport.engine.graphviz
 
 import com.tomtresansky.gradle.plugin.configurationreport.graph.ConfigurationNode
+import com.tomtresansky.gradle.plugin.configurationreport.util.assertEqualsLineByLine
 import org.gradle.api.artifacts.Configuration
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import org.junit.Assert
 import org.mockito.Mockito
 
 object ConfigurationNodeDotFormatterTest : Spek({
@@ -21,7 +21,7 @@ object ConfigurationNodeDotFormatterTest : Spek({
 
             val result = formatter.format(node)
             it("should produce the expected String") {
-                Assert.assertEquals("\tEmpty;", result)
+                assertEqualsLineByLine("\tEmpty;\n", result)
             }
         }
 
@@ -34,11 +34,13 @@ object ConfigurationNodeDotFormatterTest : Spek({
                 Mockito.`when`(this.extendsFrom).thenReturn(setOf(mockChildConfig))
             }
             val childNode = ConfigurationNode(mockChildConfig.name)
-            val parentNode = ConfigurationNode(mockParentConfig.name, listOf(childNode))
+            val parentNode = ConfigurationNode(mockParentConfig.name, true, listOf(childNode))
 
             val result = formatter.format(parentNode)
             it("should produce the expected String") {
-                Assert.assertEquals("\tParent -> Child;", result)
+                val expected = "\tParent;\n" +
+                               "\tParent -> Child [style=solid];\n"
+                assertEqualsLineByLine(expected, result)
             }
         }
 
@@ -55,11 +57,13 @@ object ConfigurationNodeDotFormatterTest : Spek({
             }
             val child1Node = ConfigurationNode(mockChild1Config.name)
             val child2Node = ConfigurationNode(mockChild2Config.name)
-            val parentNode = ConfigurationNode(mockParentConfig.name, listOf(child1Node, child2Node))
+            val parentNode = ConfigurationNode(mockParentConfig.name, true, listOf(child1Node, child2Node))
 
             val result = formatter.format(parentNode)
             it("should produce the expected String") {
-                Assert.assertEquals("\tParent -> { Child1, Child2 };", result)
+                val expected = "\tParent;\n" +
+                               "\tParent -> { Child1, Child2 } [style=solid];\n"
+                assertEqualsLineByLine(expected, result)
             }
         }
     }

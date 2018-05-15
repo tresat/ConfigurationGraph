@@ -6,12 +6,10 @@ import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import org.jetbrains.spek.api.dsl.xgiven
 import org.junit.Assert.assertEquals
 
 const val SAMPLE_GRAPH_FILENAME = "sample_serialized_graph_1.graph"
 
-@Suppress("unused")
 object ConfigurationGraphTest: Spek({
    given("a configuration graph named Empty with no nodes") {
        val graph = ConfigurationGraph("Empty", emptyList())
