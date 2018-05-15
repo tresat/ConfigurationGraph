@@ -1,5 +1,6 @@
 package com.tomtresansky.gradle.plugin.configurationreport
 
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -26,12 +27,16 @@ object BuildInfo {
         props.load(propsStream)
     }
 
+    fun instance(): BuildInfo {
+        return this
+    }
+
     val projectName: String by lazy {
         props[PROJECT_NAME_PROP] as String
     }
 
-    val homepage: String by lazy {
-        props[PROJECT_HOMEPAGE_PROP] as String
+    val homepage: URL by lazy {
+        URL(props[PROJECT_HOMEPAGE_PROP] as String?)
     }
 
     val version: String by lazy {

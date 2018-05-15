@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
+import java.net.URL
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZonedDateTime
@@ -21,7 +22,7 @@ object BuildInfoTest : Spek({
             assertThat(BuildInfo.projectName).isEqualTo(expectedName)
         }
         it("has the expected homepage") {
-            val expectedHomepage = "https://github.com/tresat/ConfigurationReport"
+            val expectedHomepage = URL("https://github.com/tresat/ConfigurationReport")
             assertThat(BuildInfo.homepage).isEqualTo(expectedHomepage)
         }
         it("has the expected version") {

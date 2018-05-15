@@ -1,11 +1,17 @@
 package com.tomtresansky.gradle.plugin.configurationreport.graph
 
+import com.tomtresansky.gradle.plugin.configurationreport.util.getResourceFile
+import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
+import org.jetbrains.spek.api.dsl.xgiven
 import org.junit.Assert.assertEquals
 
+const val SAMPLE_GRAPH_FILENAME = "sample_serialized_graph_1.graph"
+
+@Suppress("unused")
 object ConfigurationGraphTest: Spek({
    given("a configuration graph named Empty with no nodes") {
        val graph = ConfigurationGraph("Empty", emptyList())
@@ -16,4 +22,16 @@ object ConfigurationGraphTest: Spek({
            }
        }
    }
+
+    given(description = "a serialized configuration graph file") {
+        val sampleGraphFile = getResourceFile(ConfigurationGraph.javaClass, SAMPLE_GRAPH_FILENAME)
+
+        on("load") {
+            val graph = ConfigurationGraph.load(sampleGraphFile)
+
+            it("should have properly deserialized the graph") {
+                assertThat(graph).isNotNull()
+            }
+        }
+    }
 })

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Project Configurations Report</title>
+    </head>
+    <body>
+        <div id="header">
+            <h1>Configuration Report for <span data-th-text="${project}">Project</span></h1>
+        </div>
+        <div id="main">
+            <h2>Project Configurations</h2>
+            <img src="report.png" data-th-src="${graphImageFilename}" data-th-alt-title="'Configurations Graph'"/>
+            <h2>Details</h2>
+            <table>
+                <tr>
+                    <th>Configuration</th>
+                    <th>Extends</th>
+                    <th>Transitive</th>
+                </tr>
+                <tr data-th-each="config : ${graph.getNodes()}">
+                    <td data-th-text="${config.getConfigName()}">Runtime</td>
+                    <td data-th-text="${config.getConfigName()}">true</td>
+                    <td data-th-text="${config.getConfigName()}">Compile</td>
+                </tr>
+            </table>
+        </div>
+        <div id="footer">
+            <p>Generated on <span data-th-text="${#calendars.format(today, 'MMMM d, yyyy HH:mm:ss a')}">May 2, 2018 12:51:06 PM</span> by <a data-th-href="@{${homepageURL}}" href="https://github.com/tresat/ConfigurationReport">Configuration Report Plugin</a> version <span data-th-text="${version}">0.0.1</span> (<span data-th-text="${commit}">753c75724b7ab48d7284354b13388d7dd8e079f2</span>)</p>
+        </div>
+    </body>
+</html>

@@ -96,6 +96,7 @@ sourceSets {
     main {
         resources {
             srcDirs = ['src/main/resources/html',
+                       'src/main/resources/image',
                        'src/main/resources/plugin']
         }
     }
@@ -105,6 +106,7 @@ sourceSets {
             srcDirs = ['src/test/resources/images',
                        'src/test/resources/mockito',
                        'src/test/resources/build_info',
+                       'src/test/resources/sample_graphs',
                        'src/test/resources/sample_reports']
         }
     }

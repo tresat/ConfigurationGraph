@@ -26,7 +26,7 @@ class GraphVizConfigurationReportGenerator(outputDir: File) : IConfigurationRepo
     override fun generate(graph: ConfigurationGraph): File {
         writeDotFile(graph, dotFile)
         writePngFile(dotFile, pngFile)
-        writeReport(pngFile, reportFile)
+        writeReport(pngFile, graph, reportFile)
 
         return reportFile
     }
@@ -53,8 +53,8 @@ class GraphVizConfigurationReportGenerator(outputDir: File) : IConfigurationRepo
     }
 
     @VisibleForTesting
-    internal fun writeReport(pngFile: File, reportFile: File) {
-        val htmlReportFormatter = HTMLReportFormatter(pngFile, reportFile.parentFile.toPath())
+    internal fun writeReport(pngFile: File, graph: ConfigurationGraph, reportFile: File) {
+        val htmlReportFormatter = HTMLReportFormatter(pngFile, graph)
         val report = htmlReportFormatter.format()
 
         reportFile.let { f ->
