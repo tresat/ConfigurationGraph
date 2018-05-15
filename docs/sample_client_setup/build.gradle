@@ -17,8 +17,68 @@ buildscript {
     }
 }
 
+plugins {
+    id 'com.vanniktech.dependency.graph.generator' version '0.3.0'
+}
+
 apply plugin: 'java'
 apply plugin: 'com.tomtresansky.gradle.plugin.configurationreport'
+apply plugin: 'project-report'
+apply plugin: 'build-dashboard'
+
+configurations {
+    compileRed {
+        description = "Hi There"
+        extendsFrom compile
+        transitive = false
+    }
+
+    compileBlue {
+        extendsFrom compileRed
+        transitive = false
+    }
+
+    compileGreen {
+        extendsFrom compileRed
+        transitive = false
+    }
+}
+
+dependencies {
+    compileRed ''
+}
 
 defaultTasks 'configurationReport'
 
+check.dependsOn(configurationReport, projectReport)
+buildDashboard.dependsOn(check)
+
+afterEvaluate {
+    /*
+     * By default, version 0.3.0 of the dependency graph generator plugin outputs to project root.  Put it in a
+     * proper reports sub-directory.  Since it does not create tasks for each generator to actually do the graph
+     * generation until AFTER project evaluation, have to tweak the task configuration then.
+     */
+    def depReportDir = "${project.reportsDir}/dependency-graph"
+    generateDependencyGraph {
+        outputFileDot = file("$depReportDir/dependency-graph.dot")
+        outputFileImage = file("$depReportDir/dependency-graph.png")
+    }
+
+    check.dependsOn(generateDependencyGraph)
+}
+
+/*
+ * Define the version of the Gradle Wrapper we'll be using.
+ *
+ * See https://docs.gradle.org/current/userguide/gradle_wrapper.html
+ */
+task wrapper(type: Wrapper) {
+    group = 'Build Setup'
+    description = 'Call to regenerate the wrapper jar when the Gradle version # for running the build is updated'
+
+    gradleVersion = '4.6'
+
+    // Get gradle-all distribution that contains not only the binaries but also the sources for development
+    distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+}
