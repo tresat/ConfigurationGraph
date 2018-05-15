@@ -26,6 +26,10 @@ apply plugin: 'com.tomtresansky.gradle.plugin.configurationreport'
 apply plugin: 'project-report'
 apply plugin: 'build-dashboard'
 
+repositories {
+    jcenter()
+}
+
 configurations {
     compileRed {
         description = "Hi There"
@@ -40,12 +44,12 @@ configurations {
 
     compileGreen {
         extendsFrom compileRed
-        transitive = false
+        transitive = true
     }
 }
 
 dependencies {
-    compileRed ''
+    compileRed "com.google.guava:guava:24.1-jre"
 }
 
 defaultTasks 'configurationReport'

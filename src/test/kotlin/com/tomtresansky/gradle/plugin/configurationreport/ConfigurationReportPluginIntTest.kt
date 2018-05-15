@@ -53,8 +53,8 @@ class ConfigurationReportPluginIntTest {
         val reportTask = result.task(":${ConfigurationReportTask.TASK_NAME}")
 
         // Successful task executions
-        assertEquals(SUCCESS, extractTask?.getOutcome());
-        assertEquals(SUCCESS, reportTask?.getOutcome());
+        assertEquals(SUCCESS, extractTask?.outcome);
+        assertEquals(SUCCESS, reportTask?.outcome);
 
         // No errors output
         assertThat(stdErrorWriter).hasToString("")

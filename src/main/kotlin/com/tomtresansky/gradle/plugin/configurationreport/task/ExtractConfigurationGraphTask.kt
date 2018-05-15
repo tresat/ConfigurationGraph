@@ -32,10 +32,11 @@ open class ExtractConfigurationGraphTask : DefaultTask() {
     lateinit var graphFile: File
 
     @Input
-    private val graph = extractor.extractConfigurationData(project)
+    private val theProject = project
 
     @TaskAction
     fun extract() {
+        val graph = extractor.extractConfigurationData(theProject)
         graphFile.createNewFile()
 
         // Serialize the graph to a file
