@@ -103,9 +103,9 @@ sourceSets {
 
     test {
         resources {
-            srcDirs = ['src/test/resources/images',
+            srcDirs = ['src/test/resources/sample_images',
                        'src/test/resources/mockito',
-                       'src/test/resources/build_info',
+                       'src/test/resources/sample_build_info',
                        'src/test/resources/sample_graphs',
                        'src/test/resources/sample_reports']
         }

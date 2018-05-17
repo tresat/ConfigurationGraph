@@ -15,14 +15,10 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
 
-const val SAMPLE_IMAGE_FILENAME = "sample_graph.png"
-const val SAMPLE_GRAPH_FILENAME = "sample_serialized_graph_1.graph"
-const val SAMPLE_REPORT_OUTPUT_1 = "sample_report_output_1.html"
-
 object HTMLReportFormatterTest : Spek({
     given("an HTML formatter using a sample graph file") {
-        val sampleImageFile = getResourceFile(HTMLReportFormatter.javaClass, SAMPLE_IMAGE_FILENAME)
-        val sampleGraph = ConfigurationGraph.load(getResourceFile(ConfigurationGraph.javaClass, SAMPLE_GRAPH_FILENAME))
+        val sampleImageFile = ResourceLoader.getResourceFile(HTMLReportFormatter.javaClass, SAMPLE_IMAGE_FILENAME)
+        val sampleGraph = ConfigurationGraph.load(ResourceLoader.getResourceFile(ConfigurationGraph.javaClass, SAMPLE_GRAPH_FILENAME))
 
         val formatter = HTMLReportFormatter(sampleImageFile,
                                             sampleGraph)
@@ -46,7 +42,7 @@ object HTMLReportFormatterTest : Spek({
             val result = formatter.format(variables)
 
             it ("should produce correctly formatted html output") {
-                val sampleReportFile1 = getResourceFile(HTMLReportFormatterTest.javaClass, SAMPLE_REPORT_OUTPUT_1)
+                val sampleReportFile1 = ResourceLoader.getResourceFile(HTMLReportFormatterTest.javaClass, SAMPLE_REPORT_OUTPUT_1)
 
                 // Note that the th namespace declaration is also removed
                 val expected = sampleReportFile1.readText()

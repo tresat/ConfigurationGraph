@@ -17,11 +17,13 @@
                     <th>Configuration</th>
                     <th>Transitive Children</th>
                     <th>Intransitive Children</th>
+                    <th>Visible</th>
                 </tr>
                 <tr data-th-each="config : ${graph.getNodes()}">
                     <td data-th-text="${config.getConfigName()}">Runtime</td>
                     <td data-th-text="${config.printTransitiveChildren()}">true</td>
                     <td data-th-text="${config.printIntransitiveChildren()}">Compile</td>
+                    <td data-th-text="${config.getVisible()}">Visible</td>
                 </tr>
             </table>
         </div>

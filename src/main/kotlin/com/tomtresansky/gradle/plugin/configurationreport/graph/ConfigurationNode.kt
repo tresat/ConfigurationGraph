@@ -4,6 +4,7 @@ import java.io.Serializable
 
 data class ConfigurationNode(val configName: String,
                              val transitive: Boolean = true,
+                             val visible: Boolean = true,
                              val children: List<ConfigurationNode> = emptyList()) : Serializable {
     companion object {
         private const val serialVersionUID: Long = -1
@@ -11,6 +12,7 @@ data class ConfigurationNode(val configName: String,
 
     private constructor(builder: Builder) : this(builder.configName!!,
                                                  builder.transitive,
+                                                 builder.visible,
                                                  builder.extensions.toList())
 
     val transitiveChildren: List<ConfigurationNode> = children.filter { it.transitive }
@@ -24,6 +26,7 @@ data class ConfigurationNode(val configName: String,
     class Builder {
         var configName: String? = null
         var transitive: Boolean = true
+        var visible: Boolean = true
         val extensions: MutableList<ConfigurationNode> = mutableListOf()
 
         fun build() = ConfigurationNode(this)
