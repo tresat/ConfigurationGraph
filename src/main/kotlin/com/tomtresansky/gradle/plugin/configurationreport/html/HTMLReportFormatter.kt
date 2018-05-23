@@ -38,7 +38,21 @@ class HTMLReportFormatter(private val pngFile: File,
     }
 
     fun format(): String {
-        val vars = HTMLReportVariables.fromBuildInfoUsingCurrentDate(pngFile.name, configs, BuildInfo.instance())
+        val vars = if (BuildInfo.propsFile.exists()) {
+                        HTMLReportVariables.fromBuildInfoUsingCurrentDate(pngFile.name, configs, BuildInfo())
+                    } else {
+                        HTMLReportVariables("Project",
+                                            pngFile.name,
+                                            configs,
+                                            Calendar.getInstance(),
+                                            URL("http://www.example.com"),
+                                            "-",
+                                            "-")
+                        // TODO: turn build info into a task applied by the plugin itself?
+                        // TODO: or don't print if not available?
+                        // TODO: or pass defaults for these items to the formatter?
+                    }
+
         return format(vars)
     }
 

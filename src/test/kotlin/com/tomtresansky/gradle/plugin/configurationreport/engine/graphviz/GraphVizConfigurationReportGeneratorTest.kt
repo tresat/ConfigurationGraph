@@ -1,7 +1,9 @@
 package com.tomtresansky.gradle.plugin.configurationreport.engine.graphviz
 
+import com.tomtresansky.gradle.plugin.configurationreport.BuildInfo
 import com.tomtresansky.gradle.plugin.configurationreport.graph.ConfigurationGraph
 import com.tomtresansky.gradle.plugin.configurationreport.graph.ConfigurationNode
+import com.tomtresansky.gradle.plugin.configurationreport.util.TestResources
 import org.gradle.api.artifacts.Configuration
 import org.gradle.internal.impldep.com.google.common.io.Files
 import org.jetbrains.spek.api.Spek
@@ -13,7 +15,8 @@ import org.junit.Assert.assertTrue
 import org.mockito.Mockito
 
 object GraphVizConfigurationReportGeneratorTest : Spek({
-    given("a new GraphVizConfigurationReportGenerator") {
+    given("a new GraphVizConfigurationReportGenerator using sample BuildInfo 1") {
+        BuildInfo.propsFile = TestResources.getSampleBuildProperties(1)
         val generator = GraphVizConfigurationReportGenerator(Files.createTempDir())
 
         on("writing a graph with 2 empty nodes") {

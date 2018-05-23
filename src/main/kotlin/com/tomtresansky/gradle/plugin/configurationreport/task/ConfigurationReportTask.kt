@@ -1,6 +1,7 @@
 package com.tomtresansky.gradle.plugin.configurationreport.task
 
 import com.google.common.annotations.VisibleForTesting
+import com.tomtresansky.gradle.plugin.configurationreport.BuildInfo
 import com.tomtresansky.gradle.plugin.configurationreport.ConfigurationReportPluginExtension
 import com.tomtresansky.gradle.plugin.configurationreport.ReportFormat
 import com.tomtresansky.gradle.plugin.configurationreport.engine.graphviz.GraphVizConfigurationReportGenerator
@@ -30,7 +31,7 @@ import javax.inject.Inject
  *
  * All task classes must be defined as open.  If not set correctly, Gradle will try to proxy your class and fail the build.
  *
- * Constructor uses injected instantiator, retrieved via [ProjectInternal.getServices] to obtain an instance for [reports].
+ * Constructor uses injected instantiator, retrieved via [ProjectInternal.getServices] to obtain an initialize for [reports].
  */
 open class ConfigurationReportTask @Inject constructor(instantiator: Instantiator) : DefaultTask(), Reporting<ConfigurationReportContainer> {
     companion object {

@@ -9,7 +9,7 @@ import guru.nidi.graphviz.engine.Graphviz
 import java.io.File
 import java.nio.file.Paths
 
-class GraphVizConfigurationReportGenerator(outputDir: File) : IConfigurationReportGenerator {
+class GraphVizConfigurationReportGenerator(val outputDir: File) : IConfigurationReportGenerator {
     companion object {
         const val DEFAULT_DOT_FILE_NAME = "configuration_graph.dot"
         const val DEFAULT_PNG_FILE_NAME = "configuration_graph.png"

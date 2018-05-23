@@ -1,8 +1,9 @@
 package com.tomtresansky.gradle.plugin.configurationreport.html
 
+import com.tomtresansky.gradle.plugin.configurationreport.BuildInfo
 import com.tomtresansky.gradle.plugin.configurationreport.graph.ConfigurationGraph
+import com.tomtresansky.gradle.plugin.configurationreport.util.TestResources
 import com.tomtresansky.gradle.plugin.configurationreport.util.assertEqualsLineByLine
-import com.tomtresansky.gradle.plugin.configurationreport.util.getResourceFile
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
@@ -17,8 +18,10 @@ import java.util.*
 
 object HTMLReportFormatterTest : Spek({
     given("an HTML formatter using a sample graph file") {
-        val sampleImageFile = ResourceLoader.getResourceFile(HTMLReportFormatter.javaClass, SAMPLE_IMAGE_FILENAME)
-        val sampleGraph = ConfigurationGraph.load(ResourceLoader.getResourceFile(ConfigurationGraph.javaClass, SAMPLE_GRAPH_FILENAME))
+        val sampleIndex = 1
+        val sampleImageFile = TestResources.getSampleImage(sampleIndex)
+        val sampleGraph = ConfigurationGraph.load(TestResources.getSampleGraph(sampleIndex))
+        BuildInfo.propsFile = TestResources.getSampleBuildProperties(sampleIndex)
 
         val formatter = HTMLReportFormatter(sampleImageFile,
                                             sampleGraph)
@@ -42,10 +45,10 @@ object HTMLReportFormatterTest : Spek({
             val result = formatter.format(variables)
 
             it ("should produce correctly formatted html output") {
-                val sampleReportFile1 = ResourceLoader.getResourceFile(HTMLReportFormatterTest.javaClass, SAMPLE_REPORT_OUTPUT_1)
+                val sampleReportFile = TestResources.getSampleHtmlReport(sampleIndex)
 
                 // Note that the th namespace declaration is also removed
-                val expected = sampleReportFile1.readText()
+                val expected = sampleReportFile.readText()
 
                 assertThat(result).isNotNull()
                 assertEqualsLineByLine(expected, result)

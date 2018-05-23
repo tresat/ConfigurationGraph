@@ -3,10 +3,12 @@ package com.tomtresansky.gradle.plugin.configurationreport
 import com.tomtresansky.gradle.plugin.configurationreport.engine.graphviz.GraphVizConfigurationReportGenerator
 import com.tomtresansky.gradle.plugin.configurationreport.task.ConfigurationReportTask
 import com.tomtresansky.gradle.plugin.configurationreport.task.ExtractConfigurationGraphTask
+import com.tomtresansky.gradle.plugin.configurationreport.util.TestResources
 import org.junit.Assert.assertEquals
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder

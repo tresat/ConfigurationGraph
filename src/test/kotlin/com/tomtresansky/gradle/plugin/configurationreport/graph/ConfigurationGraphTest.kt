@@ -1,13 +1,12 @@
 package com.tomtresansky.gradle.plugin.configurationreport.graph
 
-import com.tomtresansky.gradle.plugin.configurationreport.util.ResourceLoader
+import com.tomtresansky.gradle.plugin.configurationreport.util.TestResources
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import org.junit.Assert.assertEquals
-import java.nio.file.Paths
 
 
 object ConfigurationGraphTest: Spek({
@@ -22,9 +21,9 @@ object ConfigurationGraphTest: Spek({
    }
 
     given(description = "a serialized configuration graph file") {
-        val sampleGraphFile = ResourceLoader.getResourceFile(Paths.get(SAMPLE_GRAPHS_DIRECTORY, SAMPLE_GRAPH_FILENAME))
+        val sampleGraphFile = TestResources.getSampleGraph(1)
 
-        on("load") {
+        on("initialize") {
             val graph = ConfigurationGraph.load(sampleGraphFile)
 
             it("should have properly deserialized the graph") {
