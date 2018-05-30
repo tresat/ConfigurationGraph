@@ -34,13 +34,13 @@ object HTMLReportFormatterTest : Spek({
             val testHomepage = URL("http://www.example.com")
             val testCommit = "753c75724b7ab48d7284354b13388d7dd8e079f2"
 
-            val variables = HTMLReportVariables(project = testProject,
-                                                graphImageFilename = sampleImageFile.name,
-                                                graph = sampleGraph,
-                                                today = testToday,
-                                                homepageURL = testHomepage,
-                                                version = testVersion,
-                                                commit = testCommit)
+            val variables = HTMLReportFormatter.HTMLReportVariables(project = testProject,
+                                                                    graphImageFilename = sampleImageFile.name,
+                                                                    graph = sampleGraph,
+                                                                    today = testToday,
+                                                                    homepageURL = testHomepage,
+                                                                    version = testVersion,
+                                                                    commit = testCommit)
 
             val result = formatter.format(variables)
 

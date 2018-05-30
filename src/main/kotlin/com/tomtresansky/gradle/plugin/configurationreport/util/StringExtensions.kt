@@ -1,3 +1,4 @@
+@file:Suppress("MatchingDeclarationName") // For EqualsLineByLineResult class
 package com.tomtresansky.gradle.plugin.configurationreport.util
 
 import java.util.regex.Pattern

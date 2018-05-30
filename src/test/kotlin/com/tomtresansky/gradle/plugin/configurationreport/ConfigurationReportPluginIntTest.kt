@@ -3,12 +3,10 @@ package com.tomtresansky.gradle.plugin.configurationreport
 import com.tomtresansky.gradle.plugin.configurationreport.engine.graphviz.GraphVizConfigurationReportGenerator
 import com.tomtresansky.gradle.plugin.configurationreport.task.ConfigurationReportTask
 import com.tomtresansky.gradle.plugin.configurationreport.task.ExtractConfigurationGraphTask
-import com.tomtresansky.gradle.plugin.configurationreport.util.TestResources
 import org.junit.Assert.assertEquals
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -43,13 +41,27 @@ class ConfigurationReportPluginIntTest {
 
         val stdErrorWriter = StringWriter()
 
-        val result = GradleRunner.create()
-                                 .withPluginClasspath()
-                                 .withGradleVersion(GRADLE_VERSION)
-                                 .withProjectDir(testProjectDir.root)
-                                 .withArguments(ConfigurationReportTask.TASK_NAME)
-                                 .forwardStdError(stdErrorWriter)
-                                 .build()
+        val builder = GradleRunner.create()
+                                  .withPluginClasspath();
+
+        /*
+          Need to append the buildInfo sourceSet's resource output to the classpath.
+
+          Can't just adjust pluginSourceSet as in: https://docs.gradle.org/4.6/javadoc/org/gradle/plugin/devel/GradlePluginDevelopmentExtension.html
+          since can only have 1 sourceSet there, and need main, and can't just add that resource to the main set, since it's generated.
+
+          See also: https://docs.gradle.org/4.6/userguide/test_kit.html?_ga=2.250551430.1472596331.1527613600-1637288102.1442506414#sub:test-kit-classpath-injection
+        */
+        val pluginClasspath = builder.pluginClasspath.toMutableList()
+        val buildInfoDir = File("build/resources/buildInfo").absoluteFile
+        pluginClasspath.add(buildInfoDir)
+
+        val result = builder.withPluginClasspath(pluginClasspath)
+                            .withGradleVersion(GRADLE_VERSION)
+                            .withProjectDir(testProjectDir.root)
+                            .withArguments(ConfigurationReportTask.TASK_NAME)
+                            .forwardStdError(stdErrorWriter)
+                            .build()
 
         val extractTask = result.task(":${ExtractConfigurationGraphTask.TASK_NAME}")
         val reportTask = result.task(":${ConfigurationReportTask.TASK_NAME}")

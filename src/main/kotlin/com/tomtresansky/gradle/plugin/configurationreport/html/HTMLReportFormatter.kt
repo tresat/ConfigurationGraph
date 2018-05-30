@@ -8,6 +8,7 @@ import org.thymeleaf.context.Context
 import org.thymeleaf.templatemode.TemplateMode
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.StringWriter
 import java.net.URL
 import java.util.*
@@ -41,16 +42,7 @@ class HTMLReportFormatter(private val pngFile: File,
         val vars = if (BuildInfo.propsFile.exists()) {
                         HTMLReportVariables.fromBuildInfoUsingCurrentDate(pngFile.name, configs, BuildInfo())
                     } else {
-                        HTMLReportVariables("Project",
-                                            pngFile.name,
-                                            configs,
-                                            Calendar.getInstance(),
-                                            URL("http://www.example.com"),
-                                            "-",
-                                            "-")
-                        // TODO: turn build info into a task applied by the plugin itself?
-                        // TODO: or don't print if not available?
-                        // TODO: or pass defaults for these items to the formatter?
+                        throw FileNotFoundException("HTMLReportFormatter can't find: ${BuildInfo.propsFile.absolutePath}!")
                     }
 
         return format(vars)
@@ -66,36 +58,36 @@ class HTMLReportFormatter(private val pngFile: File,
 
         return out.toString()
     }
-}
 
-internal data class HTMLReportVariables(val project: String,
-                                        val graphImageFilename: String,
-                                        val graph: ConfigurationGraph,
-                                        val today: Calendar,
-                                        val homepageURL: URL,
-                                        val version: String,
-                                        val commit: String) {
-    companion object {
-        fun fromBuildInfoUsingCurrentDate(graphImageFilename: String,
-                                          graph: ConfigurationGraph,
-                                          buildInfo: BuildInfo) : HTMLReportVariables {
-            return HTMLReportVariables(graphImageFilename = graphImageFilename,
-                                       project = buildInfo.projectName,
-                                       graph = graph,
-                                       today = Calendar.getInstance(),
-                                       homepageURL = buildInfo.homepage,
-                                       version = buildInfo.version,
-                                       commit = buildInfo.gitCommit)
+    internal data class HTMLReportVariables(val project: String,
+                                            val graphImageFilename: String,
+                                            val graph: ConfigurationGraph,
+                                            val today: Calendar,
+                                            val homepageURL: URL,
+                                            val version: String,
+                                            val commit: String) {
+        companion object {
+            fun fromBuildInfoUsingCurrentDate(graphImageFilename: String,
+                                              graph: ConfigurationGraph,
+                                              buildInfo: BuildInfo) : HTMLReportVariables {
+                return HTMLReportVariables(graphImageFilename = graphImageFilename,
+                                           project = buildInfo.projectName,
+                                           graph = graph,
+                                           today = Calendar.getInstance(),
+                                           homepageURL = buildInfo.homepage,
+                                           version = buildInfo.version,
+                                           commit = buildInfo.gitCommit)
+            }
         }
-    }
 
-    fun toMap(): Map<String, Any> {
-        return mapOf("project" to project,
-                     "graphImageFilename" to graphImageFilename,
-                     "graph" to graph,
-                     "today" to today,
-                     "homepageURL" to homepageURL,
-                     "version" to version,
-                     "commit" to commit)
+        fun toMap(): Map<String, Any> {
+            return mapOf("project" to project,
+                         "graphImageFilename" to graphImageFilename,
+                         "graph" to graph,
+                         "today" to today,
+                         "homepageURL" to homepageURL,
+                         "version" to version,
+                         "commit" to commit)
+        }
     }
 }

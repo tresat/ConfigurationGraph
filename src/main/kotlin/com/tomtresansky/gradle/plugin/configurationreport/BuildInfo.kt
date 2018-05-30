@@ -1,5 +1,6 @@
 package com.tomtresansky.gradle.plugin.configurationreport
 
+import com.tomtresansky.gradle.plugin.configurationreport.util.ResourceLoader
 import java.io.File
 import java.io.FileInputStream
 import java.net.URL
@@ -17,7 +18,7 @@ import java.util.*
 class BuildInfo(propsFile: File) {
     companion object {
         private const val DEFAULT_PROPS_RELATIVE_PATH = "META-INF/build/build.properties"
-        var propsFile = File(DEFAULT_PROPS_RELATIVE_PATH)
+        var propsFile = ResourceLoader.getResourceFile(DEFAULT_PROPS_RELATIVE_PATH)
 
         private const val BUILD_TIME_PROP = "build.time"
         private const val GIT_COMMIT_PROP = "git.commit"
