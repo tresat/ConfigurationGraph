@@ -1,6 +1,8 @@
 package com.tomtresansky.gradle.plugin.configurationreport.util
 
 import java.io.File
+import java.io.FileOutputStream
+import java.nio.file.Files
 import java.nio.file.Paths
 
 object TestResources {
@@ -10,8 +12,8 @@ object TestResources {
     fun getSampleHtmlReport(index: Int): File = getSampleFile(index, TestResourceType.HTML_REPORT)
 
     private fun getSampleFile(index: Int, type: TestResourceType): File {
-        val name = "${type.samplesDirectoryName}/${type.baseFileName}_$index.${type.extension}"
-        return ResourceLoader.getResourceFile(name)
+        val name = Paths.get(type.samplesDirectoryName, "${type.baseFileName}_$index.${type.extension}")
+        return ResourceLoader.getResourceAsTempFile(name.toString())
     }
 
     private enum class TestResourceType(val samplesDirectoryName: String, val baseFileName: String, val extension: String) {

@@ -18,7 +18,7 @@ import java.util.*
 class BuildInfo(propsFile: File) {
     companion object {
         private const val DEFAULT_PROPS_RELATIVE_PATH = "META-INF/build/build.properties"
-        var propsFile = ResourceLoader.getResourceFile(DEFAULT_PROPS_RELATIVE_PATH)
+        var propsFile = ResourceLoader.getResourceAsTempFile(DEFAULT_PROPS_RELATIVE_PATH)
 
         private const val BUILD_TIME_PROP = "build.time"
         private const val GIT_COMMIT_PROP = "git.commit"

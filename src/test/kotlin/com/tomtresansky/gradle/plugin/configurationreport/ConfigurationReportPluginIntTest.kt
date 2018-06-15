@@ -26,7 +26,7 @@ class ConfigurationReportPluginIntTest {
     @get:Rule
     val testProjectDir = TemporaryFolder()
 
-    @Test // TODO:Categorize me as slow or somethign
+    @Test // TODO:Categorize me as slow or something
     fun runForBasicJavaProject() {
         testProjectDir.newFile("build.gradle").let { f ->
             f.writeText("""

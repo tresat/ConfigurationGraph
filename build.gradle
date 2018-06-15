@@ -91,7 +91,7 @@ ext {
 }
 
 group = 'com.tomtresansky.gradle.plugin'
-version = "$baseVersion-$revision-${timestamp.getTime()}"
+version = baseVersion
 
 defaultTasks 'build'
 
